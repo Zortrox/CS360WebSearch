@@ -11,9 +11,7 @@
 <body>
 <div id="wrapper">
 	<form id="form-results">
-		<input id="input-query" type="text" name="q" value="
-			<?php echo $query ?>
-		">
+		<input id="input-query" type="text" name="q" value="<?php echo $query ?>">
 		<input id="input-search" type="submit" value="Search">
 	</form>
 	<div id="results-list">
