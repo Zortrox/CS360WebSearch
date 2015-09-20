@@ -1,3 +1,7 @@
+<?php
+	$query = htmlspecialchars_decode($_GET["q"]);
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +11,9 @@
 <body>
 <div id="wrapper">
 	<form id="form-results">
-		<input id="input-query" type="text" name="q">
+		<input id="input-query" type="text" name="q" value="
+			<?php echo $query ?>
+		">
 		<input id="input-search" type="submit" value="Search">
 	</form>
 	<div id="results-list">
