@@ -40,9 +40,11 @@ body {
 	padding-top: 10px;
 	width: 90%;
 }
+input {
+	padding: 5px;
+}
 #input-query {
 	width: 50%;
-	padding: 5px;
 }
 
 #results-list {
