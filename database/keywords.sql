@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS keywords(
+	keyId int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	word varchar(15) NOT NULL
+	);
