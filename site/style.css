@@ -50,3 +50,10 @@ input {
 #results-list {
 	padding: 10px;
 }
+
+#home-button {
+	float: right;
+	padding: 5px;
+	border-radius: 2px;
+	background-color: #888;
+}

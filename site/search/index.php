@@ -14,6 +14,7 @@
 		<input id="input-query" type="text" name="q" value="<?php echo $query ?>">
 		<input id="input-search" type="submit" value="Search">
 	</form>
+	<a href="/"><div id="home-button">Home</div></a>
 	<div id="results-list">
 		<p>WOW, LOOK AT ALL THE RESULTS!</p>
 		<?php 
