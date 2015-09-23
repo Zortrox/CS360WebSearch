@@ -20,7 +20,7 @@
 	<div id="results-list">
 		<p>WOW, LOOK AT ALL THE RESULTS!</p>
 		<?php 
-			$mysqli = new mysqli("localhost", "cssearch", "WKU!searchsql", "webSearchEngine");
+			$mysqli = new mysqli("localhost", "root", "WKU!searchsql", "webSearchEngine");
 
 			/* check connection */
 			if (mysqli_connect_errno()) {
