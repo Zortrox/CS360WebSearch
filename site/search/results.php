@@ -15,10 +15,10 @@ if (mysqli_connect_errno()) {
 	exit();
 }
 
-$sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='" . $database . "'";
+$sql = "SELECT * FROM keywords";
 
 /* return name of current default database */
-if ($result = $mysqli->query("SELECT * FROM keywords")) {
+if ($result = $mysqli->query($sql)) {
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_row();
 		printf("Default database is %s.\n", $row[0]);
