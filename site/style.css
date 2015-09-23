@@ -58,13 +58,14 @@ input {
 #home-button div{
 	font: 13.3333px Arial;
 	float: right;
-	padding: 6px;
+	padding: 7px;
 	border-radius: 1px;
 	background-color: #888;
 	margin-top: 10px;
+	margin-right: 5px;
 }
 #home-button,
 #home-button:visited,
 #home-button:active {
-	color: black;
+	color: #D04242;
 }
