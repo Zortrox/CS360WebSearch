@@ -5,8 +5,6 @@ $user = "web";
 $pass = "webSearch!";
 $database = "webSearchEngine";
 
-printf("start");
-
 $mysqli = new mysqli("localhost", $user, $pass, $database);
 
 /* check connection */
@@ -27,7 +25,5 @@ if ($result = $mysqli->query($sql)) {
 		printf("No Data");
 	}
 }
-
-printf("end");
 
 ?>
