@@ -2,8 +2,8 @@
 //$query variable is the user's search
 
 $user = "web";
-$pass = "webSearch!"
-$database = "webSearchEngine"
+$pass = "webSearch!";
+$database = "webSearchEngine";
 
 printf("start");
 
