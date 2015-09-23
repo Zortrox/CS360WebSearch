@@ -60,12 +60,12 @@ input {
 	float: right;
 	padding: 7px;
 	border-radius: 1px;
-	background-color: #888;
+	background-color: #D04242;
 	margin-top: 10px;
 	margin-right: 5px;
 }
 #home-button,
 #home-button:visited,
 #home-button:active {
-	color: #D04242;
+	color: black;
 }
