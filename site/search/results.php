@@ -13,7 +13,7 @@ if (mysqli_connect_errno()) {
 	exit();
 }
 
-$sql = "SELECT * FROM keywords";
+$sql = "SELECT word FROM keywords";
 
 /* return name of current default database */
 if ($result = $mysqli->query($sql)) {
