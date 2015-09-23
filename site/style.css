@@ -52,13 +52,15 @@ input {
 	padding: 10px;
 }
 
-#home-button {
+#home-button div{
 	float: right;
 	padding: 5px;
 	border-radius: 2px;
 	background-color: #888;
+	margin-top: 10px;
 }
-#home-button a,
-#home-button a:visited {
+#home-button,
+#home-button:visited,
+#home-button:active {
 	color: black;
 }
