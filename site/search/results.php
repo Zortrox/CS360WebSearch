@@ -34,9 +34,9 @@ $construct = "";
 foreach( $query_exploded as $query_each ) {
 	$x++;
 	if( $x == 1 )
-			$construct .="keywords LIKE '%$query_each%'";
+			$construct .= "keywords LIKE $query_each";
 	else		
-			$construct .="AND keywords LIKE '%$query_each%'";
+			$construct .= " AND keywords LIKE $query_each";
 	echo $construct;
 }
 	
