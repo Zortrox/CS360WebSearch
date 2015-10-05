@@ -46,7 +46,7 @@ $run = mysql_query( $construct );
 $foundnum = mysql_num_rows($run);
 
 if ($foundnum == 0)
-	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>"	     
+	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";    
 else {		 
 	echo "$foundnum results found !<p>";
 	
