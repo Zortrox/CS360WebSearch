@@ -19,7 +19,7 @@ $sql = "SELECT word FROM keywords";
 if ($result = $mysqli->query($sql)) {
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_row();
-		printf("Default database is %s.\n", $row[0]);
+		printf("Default keyword is %s. <br>", $row[0]);
 		$result->close();
 	} else {
 		printf("No Data");
@@ -45,11 +45,11 @@ $run = mysql_query( $construct );
 $foundnum = mysql_num_rows($run);
 
 if ($foundnum == 0)
-	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";    
+	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";   
 else {		 
 	echo "$foundnum results found !<p>";
 	
-	while( $runrows = mysql_fetch_assoc( $run ) ) { 
+	while( $runrows = mysql_fetch_assoc( $run ) ) {
 		$title = $runrows ['title']; 
 		$desc = $runrows ['description']; 
 		$url = $runrows ['url'];
