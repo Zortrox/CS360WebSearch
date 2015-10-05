@@ -37,7 +37,6 @@ foreach( $query_exploded as $query_each ) {
 			$construct .= "keywords LIKE $query_each";
 	else		
 			$construct .= " AND keywords LIKE $query_each";
-	echo $construct;
 }
 	
 $construct = " SELECT * FROM keywords WHERE $construct ";
