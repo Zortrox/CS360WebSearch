@@ -50,8 +50,8 @@ if ($foundnum == 0)
 else {		 
 	echo "$foundnum result(s) found!<br>";
 	
-	while ($resultsRow = $result->fetch_row()) {
-		$webIDQuery = "SELECT * FROM locations WHERE webid LIKE '$resultsRow[0]'";
+	while ($resultsID = ($run->fetch_row())[0]) {
+		$webIDQuery = "SELECT * FROM locations WHERE webid LIKE '$resultsID'";
 		$webIDResults, $mysqli->query($webIDQuery);
 
 		$runrows = mysql_fetch_assoc( $webIDResults );
