@@ -34,12 +34,12 @@ $construct = "";
 foreach( $query_exploded as $query_each ) {
 	$x++;
 	if( $x == 1 )
-			$construct .= "keywords LIKE $query_each";
+			$construct .= "word LIKE $query_each";
 	else		
-			$construct .= " AND keywords LIKE $query_each";
+			$construct .= " AND word LIKE $query_each";
 }
 	
-$construct = " SELECT * FROM keywords WHERE $construct ";
+$construct = "SELECT * FROM keywords WHERE $construct";
 $run = mysql_query( $construct );
 
 $foundnum = mysql_num_rows($run);
