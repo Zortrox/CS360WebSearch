@@ -19,7 +19,7 @@ $sql = "SELECT word FROM keywords";
 if ($result = $mysqli->query($sql)) {
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_row();
-		printf("Default keyword is %s. <br>", $row[0]);
+		printf("Default keyword is %s. <br>", $row[1]);
 		$result->close();
 	} else {
 		printf("No Data");
@@ -34,9 +34,9 @@ $construct = "";
 foreach( $query_exploded as $query_each ) {
 	$x++;
 	if( $x == 1 )
-			$construct .= "word LIKE $query_each";
+			$construct .= "word LIKE '$query_each'";
 	else		
-			$construct .= " AND word LIKE $query_each";
+			$construct .= " AND word LIKE '$query_each'";
 }
 	
 $construct = "SELECT * FROM keywords WHERE $construct";
