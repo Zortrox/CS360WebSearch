@@ -40,7 +40,7 @@ foreach( $query_exploded as $query_each ) {
 			$construct .= " AND word LIKE '$query_each'";
 }
 	
-$construct = "SELECT * FROM keywords WHERE $construct";
+$construct = "SELECT word FROM keywords WHERE $construct";
 $run = mysql_query( $construct );
 
 $foundnum = mysql_num_rows($run);
@@ -51,8 +51,8 @@ else {
 	echo "$foundnum results found !<p>";
 	
 	while( $runrows = mysql_fetch_assoc( $run ) ) {
-		$title = $runrows ['title']; 
-		$desc = $runrows ['description']; 
+		$title = $runrows ['title'];
+		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
 		
 		echo "<a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <p>";
