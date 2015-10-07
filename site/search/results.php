@@ -63,7 +63,7 @@ else {
 		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
 		
-		echo "<a href='http://$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <br>";
+		echo "<a href='http:\/\/$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <br>";
 	}
 }
 
