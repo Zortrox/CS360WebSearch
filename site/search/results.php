@@ -51,19 +51,22 @@ else {
 	echo "$foundnum result(s) found!<br>";
 
 	while ($resultsRow = $run->fetch_row()) {
-		echo "hi";
-		/*
 		$resultID = $resultsRow[0];
-		$webIDQuery = "SELECT * FROM locations WHERE webid LIKE '$resultID'";
-		$webIDResults, $mysqli->query($webIDQuery);
+		$webIDQuery = "SELECT webId FROM siteKeywords WHERE keyId LIKE '$resultID'";
+		$webIDResults = $mysqli->query($webIDQuery);
 
-		$runrows = mysql_fetch_assoc( $webIDResults );
+		$webID = $webIDResults->fetch_row()[0];
+		$website = $mysqli->query("SELECT * FROM locations WHERE webId LIKE '$webID'");
+
+		/*
+		$runrows = mysql_fetch_assoc( $website );
 		$title = $runrows ['title'];
 		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
 		
 		echo "<a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <br>";
 		*/
+		echo "hi";
 	}
 }
 
