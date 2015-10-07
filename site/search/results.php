@@ -20,7 +20,7 @@ if ($result = $mysqli->query($sql)) {
 	echo $result->num_rows;
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_row();
-		printf("Default keyword is %s. <br>", $row[0]);
+		printf("Default keyword is %s. <br>", $row[1]);
 		$result->close();
 	} else {
 		printf("No Data");
