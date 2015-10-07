@@ -13,9 +13,9 @@ if (mysqli_connect_errno()) {
 	exit();
 }
 
+/*
 $sql = "SELECT * FROM keywords";
-
-/* return name of current default database */
+//return name of current default database
 if ($result = $mysqli->query($sql)) {
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_row();
@@ -25,6 +25,7 @@ if ($result = $mysqli->query($sql)) {
 		printf("No Data");
 	}
 }
+*/
 
 //mysql_select_db($database);
 
@@ -40,16 +41,20 @@ foreach( $query_exploded as $query_each ) {
 }
 	
 $construct = "SELECT * FROM keywords WHERE $construct";
-$run = $mysqli->query($construct); 
+$run = $mysqli->query($construct);
 
 $foundnum = $run->num_rows;
 
 if ($foundnum == 0)
 	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";   
 else {		 
-	echo "$foundnum results found !<p>";
+	echo "$foundnum result(s) found!<br>";
 	
-	while( $runrows = mysql_fetch_assoc( $run ) ) {
+	while ($resultsRow = $result->fetch_row()) {
+		$webIDQuery = "SELECT * FROM locations WHERE webid LIKE '$resultsRow[0]'"
+		$webIDResults, $mysqli->query($webIDQuery);
+
+		$runrows = mysql_fetch_assoc( $webIDResults );
 		$title = $runrows ['title'];
 		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
