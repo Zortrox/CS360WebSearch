@@ -19,7 +19,7 @@ $sql = "SELECT word FROM keywords";
 if ($result = $mysqli->query($sql)) {
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_row();
-		printf("Default keyword is %s. <br>", $row[1]);
+		printf("Default keyword is %s. <br>", $row[0]);
 		$result->close();
 	} else {
 		printf("No Data");
