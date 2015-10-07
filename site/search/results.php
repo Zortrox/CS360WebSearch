@@ -17,7 +17,6 @@ $sql = "SELECT * FROM keywords";
 
 /* return name of current default database */
 if ($result = $mysqli->query($sql)) {
-	echo $result->num_rows;
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_row();
 		printf("Default keyword is %s. <br>", $row[1]);
@@ -41,6 +40,7 @@ foreach( $query_exploded as $query_each ) {
 }
 	
 $construct = "SELECT word FROM keywords WHERE $construct";
+echo $construct;
 $run = mysql_query( $construct );
 
 $foundnum = mysql_num_rows($run);
