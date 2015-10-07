@@ -39,9 +39,10 @@ foreach( $query_exploded as $query_each ) {
 			$construct .= " AND word LIKE '$query_each'";
 }
 	
-$construct = "SELECT word FROM keywords WHERE $construct";
-echo $construct;
-$run = mysql_query( $construct );
+$construct = "SELECT * FROM keywords WHERE $construct";
+$run = $mysqli->query($construct);
+
+echo $run->num_rows
 
 $foundnum = mysql_num_rows($run);
 
