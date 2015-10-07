@@ -49,7 +49,7 @@ if ($foundnum == 0)
 	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";   
 else {		 
 	echo "$foundnum result(s) found!<br>";
-	
+	/*
 	while ($resultsID = ($run->fetch_row())[0]) {
 		$webIDQuery = "SELECT * FROM locations WHERE webid LIKE '$resultsID'";
 		$webIDResults, $mysqli->query($webIDQuery);
@@ -60,7 +60,7 @@ else {
 		$url = $runrows ['url'];
 		
 		echo "<a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <br>";
-	}
+	}*/
 }
 
 ?>
