@@ -42,7 +42,7 @@ foreach( $query_exploded as $query_each ) {
 $construct = "SELECT * FROM keywords WHERE $construct";
 $run = $mysqli->query($construct);
 
-echo $run->num_rows
+echo $run->num_rows;
 
 $foundnum = mysql_num_rows($run);
 
