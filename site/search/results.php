@@ -13,10 +13,11 @@ if (mysqli_connect_errno()) {
 	exit();
 }
 
-$sql = "SELECT word FROM keywords";
+$sql = "SELECT * FROM keywords";
 
 /* return name of current default database */
 if ($result = $mysqli->query($sql)) {
+	echo $result->num_rows;
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_row();
 		printf("Default keyword is %s. <br>", $row[0]);
