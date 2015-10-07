@@ -51,7 +51,7 @@ else {
 	echo "$foundnum result(s) found!<br>";
 	
 	while ($resultsRow = $result->fetch_row()) {
-		$webIDQuery = "SELECT * FROM locations WHERE webid LIKE '$resultsRow[0]'"
+		$webIDQuery = "SELECT * FROM locations WHERE webid LIKE '$resultsRow[0]'";
 		$webIDResults, $mysqli->query($webIDQuery);
 
 		$runrows = mysql_fetch_assoc( $webIDResults );
@@ -59,7 +59,7 @@ else {
 		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
 		
-		echo "<a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <p>";
+		echo "<a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a> <br>";
 	}
 }
 
