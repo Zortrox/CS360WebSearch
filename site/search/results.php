@@ -58,7 +58,7 @@ else {
 		$webID = $webIDResults->fetch_row()[0];
 		$website = $mysqli->query("SELECT * FROM locations WHERE webId LIKE '$webID'");
 
-		$runrows = mysql_fetch_assoc( $website );
+		$runrows = $website->fetch_assoc();
 		$title = $runrows ['title'];
 		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
