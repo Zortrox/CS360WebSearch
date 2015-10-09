@@ -37,7 +37,7 @@ foreach( $query_exploded as $query_each ) {
 	if( $x == 1 )
 			$construct .= "word LIKE '$query_each'";
 	else		
-			$construct .= " AND word LIKE '$query_each'";
+			$construct .= " OR word LIKE '$query_each'";
 }
 	
 $construct = "SELECT * FROM keywords WHERE $construct";
