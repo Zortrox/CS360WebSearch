@@ -48,7 +48,7 @@ $foundnum = $run->num_rows;
 if ($foundnum == 0)
 	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";   
 else {		 
-	echo "$foundnum result(s) found!<br>";
+	echo "<p>$foundnum result(s) found!</p>";
 
 	while ($resultsRow = $run->fetch_row()) {
 		$resultID = $resultsRow[0];
@@ -63,7 +63,7 @@ else {
 		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
 		
-		echo "<a href='http://$url'> <b> $title </b> </a> <br> $desc <br> <a href='http://$url'> $url </a> <br>";
+		echo "<p><a href='http://$url'> <b> $title </b> </a> <br> $desc <br> <a href='http://$url'> $url </a></p>";
 	}
 }
 
