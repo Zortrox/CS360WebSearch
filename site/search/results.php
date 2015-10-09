@@ -59,7 +59,7 @@ else {
 		$website = $mysqli->query("SELECT * FROM locations WHERE webId LIKE '$webID'");
 
 		$runrows = $website->fetch_assoc();
-		$title = $runrows ['title'];
+		$title = $runrows ['name'];
 		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
 		
