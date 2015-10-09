@@ -18,7 +18,6 @@
 		<a id="home-button" href="/"><div >Home</div></a>
 	</div>
 	<div id="results-list">
-		<p>WOW, LOOK AT ALL THE RESULTS!</p>
 		<?php include "results.php"; ?>
 	</div>
 </div>
