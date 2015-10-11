@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class DatabaseManager {
 
 	static Connection connection;
-	private static final String url = "jdbc:mysql://127.0.0.1/webSearchEngine";
+	private static final String url = "jdbc:mysql://127.0.0.1:3306/webSearchEngine";
 	private static final String user = "crawl";
 	private static final String pass = "webCrawl!";
 	
@@ -19,7 +19,7 @@ public class DatabaseManager {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			
 			System.out.println("Starting connection test...");
-			connection = DriverManager.getConnection(url+"?user="+user+"&password="+pass);
+			connection = DriverManager.getConnection(url, user, pass);
 			System.out.println("Connection Established!");
 			
 			DatabaseMetaData dbmd = connection.getMetaData();
