@@ -2,8 +2,8 @@
 robots/.metadata/
 robots/.recommenders/
 
-#non-essential project files for PortScanner
-robots/PortScanner/bin/
-robots/Portscanner/.settings/
-robots/PortScanner/.classpath
-robots/PortScanner/.project
+#non-essential project files for Eclipse (PortScanner + WKUSpider)
+robots/*/bin/
+robots/*/.settings/
+robots/*/.classpath
+robots/*/.project
