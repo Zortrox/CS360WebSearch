@@ -89,6 +89,8 @@ else {
 	}
 
 	$websiteRows = $mysqli->query($websiteRowQuery);
+	echo "test";
+	echo $websiteRows->num_rows;
 	while ($website = $websiteRows->fetch_row()) {
 		$runrows = $website->fetch_assoc();
 		$title = $runrows ['name'];
