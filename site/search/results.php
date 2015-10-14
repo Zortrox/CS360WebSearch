@@ -77,8 +77,7 @@ else {
 	//sort web array based on all key weights
 	arsort($webArray);
 
-	foreach ($webArray as $wordWeight) {
-		$webID = key($webArray);
+	foreach ($webArray as $webID => $wordWeight) {
 		$website = $mysqli->query("SELECT * FROM locations WHERE webId LIKE '$webID'");
 
 		$runrows = $website->fetch_assoc();
