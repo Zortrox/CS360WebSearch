@@ -91,7 +91,7 @@ else {
 	$websiteRows = $mysqli->query($websiteRowQuery);
 	while ($website = $websiteRows->fetch_row()) {
 		$runrows = $website->fetch_assoc();
-		var_dump($runrows);
+		echo var_dump($runrows);
 		$title = $runrows['name'];
 		$desc = $runrows['description'];
 		$url = $runrows['url'];
