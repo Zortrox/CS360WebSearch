@@ -17,9 +17,7 @@ public class PageParser {
 	ArrayList<Data> dataNodes;
 	String preview = "";
 	String[] lowWeight = {"of","a","the","and","is","in","to","all","in"};
-	// we are also gonna need a dictionary of words and a way to determine weights
-	// database specs are needed past here
-	
+	// we are also gonna need a dictionary of words and a way to determine weights	
 	
 	//161.6.0.0 - 161.6.255.255
 	
@@ -76,6 +74,7 @@ public class PageParser {
 		Collections.sort(dataNodes,new OrderNode());
 	}
 	
+	// This is just for display purposes. Can be deleted later...
 	class OrderNode implements Comparator<Data>{
 
 		@Override
@@ -90,6 +89,9 @@ public class PageParser {
 	}
 	
 		
+	
+	// DON'T FORGET THE HEADINGS!!!!
+	
 	/**
 	 * This function should be used when the object is created in order to gather all the links 
 	 * on the page.
@@ -144,10 +146,6 @@ public class PageParser {
 		return code;
 	}
 	
-//	private void gatherHeadings(String src){
-//		
-//	}
-	
 	private String gatherText(String src){
 		String text = "";
 		
@@ -193,6 +191,9 @@ public class PageParser {
 		
 	}
 	
+	
+	
+	
 	/**
 	 * Removes the html tags and their content "<" to ">" from the string
 	 * @param input string
@@ -210,6 +211,9 @@ public class PageParser {
 		
 		return edited;
 	}
+	
+	
+	
 	
 	public ArrayList<String> getLinks(){
 		return links;

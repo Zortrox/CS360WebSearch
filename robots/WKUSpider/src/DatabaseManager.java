@@ -37,6 +37,7 @@ public class DatabaseManager {
 		try {
 			connection.close();
 			pst.close();
+			System.out.println("\n");
 			System.out.println("Connection closed");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -77,18 +78,17 @@ public class DatabaseManager {
 	public static int addLocation(String url, String name, String description, String hash){
 		try {
 			
-			pst = connection.prepareStatement("INSERT INTO locations (webId, name, description, url, hash)"
-					+ " values (?, ?, ?, ?, ?)");
+			pst = connection.prepareStatement("INSERT INTO locations (name, description, url, hash)"
+					+ " values (?, ?, ?, ?)");
 			
-			pst.setInt(1, 3);
-			pst.setString(2,name);
-			pst.setString(3, description);
-			pst.setString(4, url);
-			pst.setString(5, hash);
+			pst.setString(1, name);
+			pst.setString(2, description);
+			pst.setString(3, url);
+			pst.setString(4, hash);
 			
 			pst.execute();
 			
-			return 3;
+			return hasLocation(url);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -97,15 +97,61 @@ public class DatabaseManager {
 	}
 	
 	
-	public static void addKeyWords(ArrayList<Data> data){
+	public static int addKeyword(String keyword){
+		try {
+			pst = connection.prepareStatement("SELECT * FROM keywords");
+	        rs = pst.executeQuery();
+	        int size = 1;
+	        
+	        while (rs.next()) {
+	        	if(rs.getString(2).equals(keyword.toLowerCase()))
+	        		return rs.getInt(1);
+	        	size++;
+	        }
+	        
+			pst = connection.prepareStatement("INSERT INTO keywords (word)"
+					+ " values (?)");
+			pst.setString(1,keyword);
+			pst.execute();
+			
+			return size;
+	        
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	
+	public static void addData(ArrayList<Data> data, int pageID){
+		
+		for(Data d : data){
+			int keyID = addKeyword(d.word);
+			
+			// skips the word if it wasn't in the database
+			if(keyID == -1)
+				continue;
+			
+			try {		        
+				pst = connection.prepareStatement("INSERT INTO siteKeywords (webId, keyId, weight)"
+						+ " values (?, ?, ?)");
+				pst.setInt(1,pageID);
+				pst.setInt(2,keyID);
+				pst.setInt(3, d.weight);
+				pst.execute();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		
 	}
 	
-	public static void clearKeywordsForPage(String url){
+	public static void clearDataForPage(String url){
 		
 		
 		
 	}
+	
 	
 	public static void printLocationDatabase(){
 		try {
@@ -124,7 +170,39 @@ public class DatabaseManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static void printKeywordDatabase(){
+		try {
+			pst = connection.prepareStatement("SELECT * FROM keywords");
+			rs = pst.executeQuery();
 
+			while (rs.next()) {
+				System.out.println();
+				System.out.print(rs.getInt(1) + " : ");
+				System.out.print(rs.getString(2) + " : ");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void printDataDatabase(){
+		try {
+			pst = connection.prepareStatement("SELECT * FROM siteKeywords");
+			rs = pst.executeQuery();
+
+			while (rs.next()) {
+				System.out.println();
+				System.out.print(rs.getInt(1) + " : ");
+				System.out.print(rs.getInt(2) + " : ");
+				System.out.print(rs.getInt(3) + " : ");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 
