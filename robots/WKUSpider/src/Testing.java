@@ -2,16 +2,31 @@ public class Testing {
 
 	public static void main(String[] args) {
 
+		String startingPoint = "https://www.wku.edu/";
+		int amt = 1;
+		
+		if(args.length > 0)
+			amt = Integer.parseInt(args[0]);
+		
+		if(args.length > 1)
+			startingPoint = args[1];
+		
 		DatabaseManager.Initialize();
 		
-		Spider spider1 = new Spider("https://www.wku.edu/cs/index.php",1);
-		spider1.crawl();
+		if (args[0].equals("-display")) {
+			DatabaseManager.printLocationDatabase();
+			System.out.println("\n");
+			DatabaseManager.printKeywordDatabase();
+			System.out.println("\n");
+			DatabaseManager.printDataDatabase();
+			
+			DatabaseManager.Exit();
+			
+			return;
+		}
 		
-		DatabaseManager.printLocationDatabase();
-		System.out.println("\n");
-		DatabaseManager.printKeywordDatabase();
-		System.out.println("\n");
-		DatabaseManager.printDataDatabase();
+		Spider spider = new Spider(startingPoint,amt);
+		spider.crawl();
 		
 		DatabaseManager.Exit();
 		

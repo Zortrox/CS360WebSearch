@@ -58,7 +58,7 @@ public class PageParser {
 		text = text.replaceAll("\\s+"," ");
 		System.out.println(text);
 		
-		preview = text.substring(200)+"...";
+		preview = text.substring(0,50)+"...";
 
 		// remove punctuation for now
 		text = text.replaceAll("\\.", "");

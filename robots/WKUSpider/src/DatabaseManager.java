@@ -98,7 +98,7 @@ public class DatabaseManager {
 			
 			pst.execute();
 			
-			return loc+1;
+			return loc;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -124,7 +124,7 @@ public class DatabaseManager {
 			pst.setString(1,keyword.toLowerCase());
 			pst.execute();
 			
-			return size+1;
+			return size;
 	        
 		} catch (SQLException e) {
 			e.printStackTrace();
