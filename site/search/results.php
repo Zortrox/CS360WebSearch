@@ -90,11 +90,11 @@ else {
 
 	$websiteRows = $mysqli->query($websiteRowQuery);
 	while ($website = $websiteRows->fetch_row()) {
-		echo "TEST";
 		$runrows = $website->fetch_assoc();
-		$title = $runrows ['name'];
-		$desc = $runrows ['description'];
-		$url = $runrows ['url'];
+		var_dump($runrows);
+		$title = $runrows['name'];
+		$desc = $runrows['description'];
+		$url = $runrows['url'];
 		
 		echo "<p><a href='http\://$url'> <b> $title </b> </a> <br> $desc <br> <a href='http\://$url'> $url </a></p>";
 	}
