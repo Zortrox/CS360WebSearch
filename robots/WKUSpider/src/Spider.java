@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -9,11 +8,13 @@ public class Spider {
 	Queue<String> queue = new LinkedList<String>();
 	
 	public Spider(String startingPoint, int numOfSearches) {
-		super();
 		this.startingPoint = startingPoint;
 		this.numOfSearches = numOfSearches;
 	}
 	
+	/**
+	 * Starts the crawling based on previous set parameters
+	 */
 	public void crawl(){
 		queue.add(startingPoint);
 		run(startingPoint);
@@ -28,12 +29,11 @@ public class Spider {
 		
 		PageParser page = new PageParser(url);
 		
-		ArrayList<Data> nodes = page.getData();
-		for(Data d : nodes)
-			d.print();
-		
 		DatabaseManager.addLocation(page.url, page.title, page.preview, "lalalalalala");
-		DatabaseManager.addKeyWords(page.getData());
+//		DatabaseManager.addKeyWords(page.getData());
+		
+		for(Data d : page.getData())
+			d.print();
 		
 		for(String u : page.getLinks())
 			if(!DatabaseManager.hasLocation(u))

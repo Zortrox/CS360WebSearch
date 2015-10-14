@@ -14,11 +14,15 @@ public class Testing {
 //		for(Data d : nodes){
 //			d.print();
 //		}
-		
+
 		DatabaseManager.Initialize();
 		
-//		Spider spider1 = new Spider("https://www.wku.edu/cs/index.php",1);
-//		spider1.crawl();
+		Spider spider1 = new Spider("https://www.wku.edu/cs/index.php",1);
+		spider1.crawl();
+		
+		DatabaseManager.printLocationDatabase();
+		
+		DatabaseManager.Exit();
 		
 
 	}

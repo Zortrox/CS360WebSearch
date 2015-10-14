@@ -60,6 +60,8 @@ public class PageParser {
 		
 		String text = gatherText(src);
 		
+		System.out.println(text);
+		
 		preview = text.substring(397)+"...";
 
 		// remove punctuation for now
@@ -237,8 +239,8 @@ public class PageParser {
 //		return null;
 //	}
 	
-	public String[] getLinks(){
-		return (String[]) links.toArray();
+	public ArrayList<String> getLinks(){
+		return links;
 	}
 	
 	public ArrayList<Data> getData(){
