@@ -81,15 +81,14 @@ else {
 	$firstRow = true;
 	foreach ($webArray as $webID => $wordWeight) {
 		if ($firstRow == true) {
-			$websiteRowQuery += "webId LIKE '$webID'";
+			$websiteRowQuery .= "webId LIKE '$webID'";
 			$firstRow = false;
 		}
 		else
-			$websiteRowQuery += " OR webId LIKE '$webID'";
+			$websiteRowQuery .= " OR webId LIKE '$webID'";
 	}
 
 	$websiteRows = $mysqli->query($websiteRowQuery);
-	echo "test";
 	echo $websiteRowQuery;
 	while ($website = $websiteRows->fetch_row()) {
 		$runrows = $website->fetch_assoc();
