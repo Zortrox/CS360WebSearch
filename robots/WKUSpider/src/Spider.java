@@ -20,6 +20,10 @@ public class Spider {
 		run(startingPoint);
 	}
 
+	/**
+	 * Recursive method that will recursively parse pages
+	 * @param url
+	 */
 	private void run(String url){
 		
 		if(numOfSearches == 0 || queue.isEmpty()){
@@ -29,14 +33,14 @@ public class Spider {
 		
 		PageParser page = new PageParser(url);
 		
-		DatabaseManager.addLocation(page.url, page.title, page.preview, "");
-//		DatabaseManager.addKeyWords(page.getData());
+		int pageID = DatabaseManager.addLocation(page.url, page.title, page.preview, "");
+		DatabaseManager.addData(page.getData(),pageID);
 		
 		for(Data d : page.getData())
 			d.print();
 		
 		for(String u : page.getLinks())
-			if(DatabaseManager.hasLocation(u) != -1)
+			if(DatabaseManager.getLocation(u) != -1)
 				queue.add(u);
 		
 		numOfSearches--;
