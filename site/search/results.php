@@ -90,7 +90,7 @@ else {
 
 	$websiteRows = $mysqli->query($websiteRowQuery);
 	echo "test";
-	echo $websiteRows->num_rows;
+	echo $websiteRowQuery;
 	while ($website = $websiteRows->fetch_row()) {
 		$runrows = $website->fetch_assoc();
 		$title = $runrows ['name'];
