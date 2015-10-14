@@ -88,6 +88,7 @@ else {
 			$websiteRowQuery += " OR WHERE webId LIKE '$webID'";
 	}
 
+	echo "ran first";
 	$websiteRows = $mysqli->query($websiteRowQuery);
 	echo $websiteRows;
 	while ($website = $websiteRows->fetch_row()) {
