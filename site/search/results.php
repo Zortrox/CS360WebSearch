@@ -31,10 +31,10 @@ if ($result = $mysqli->query($sql)) {
 
 //create array of strings in query **IN PROGRESS**
 $moreStrings = false;
-$queryPart = $query
+$queryPart = $query;
 while ($moreStrings) {
-	$stringPos1 = strpos($queryPart, "\"")
-	$queryPart = substr($queryPart, )
+	$stringPos1 = strpos($queryPart, "\"");
+	$queryPart = substr($queryPart, 0);
 }
 
 $query_exploded = explode(" ", $query );
