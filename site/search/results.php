@@ -94,7 +94,7 @@ else {
 		$desc = $website['description'];
 		$url = $website['url'];
 		
-		echo "<p><a href='http\://$url'> <b> $title </b> </a> <br> $desc <br> <a href='http\://$url'> $url </a></p>";
+		echo "<p><a href='http://$url'> <b> $title </b> </a> <br> $desc <br> <a href='http://$url'> $url </a></p>";
 	}
 }
 
