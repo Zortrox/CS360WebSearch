@@ -50,7 +50,7 @@ public class DatabaseManager {
 	 * @param url - the URL to check
 	 * @return the locaion of the URL
 	 */
-	public static int hasLocation(String url){
+	public static int getLocation(String url){
 		try {
 			pst = connection.prepareStatement("SELECT * FROM locations");
 	        rs = pst.executeQuery();
@@ -78,6 +78,16 @@ public class DatabaseManager {
 	public static int addLocation(String url, String name, String description, String hash){
 		try {
 			
+			pst = connection.prepareStatement("SELECT * FROM locations");
+	        rs = pst.executeQuery();
+	        int loc = 1;
+	        
+	        while (rs.next()) {
+	        	if(rs.getString(4).equals(url))
+	        		return rs.getInt(1);
+	        	loc++;
+	        }
+			
 			pst = connection.prepareStatement("INSERT INTO locations (name, description, url, hash)"
 					+ " values (?, ?, ?, ?)");
 			
@@ -88,7 +98,7 @@ public class DatabaseManager {
 			
 			pst.execute();
 			
-			return hasLocation(url);
+			return loc+1;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -111,10 +121,10 @@ public class DatabaseManager {
 	        
 			pst = connection.prepareStatement("INSERT INTO keywords (word)"
 					+ " values (?)");
-			pst.setString(1,keyword);
+			pst.setString(1,keyword.toLowerCase());
 			pst.execute();
 			
-			return size;
+			return size+1;
 	        
 		} catch (SQLException e) {
 			e.printStackTrace();

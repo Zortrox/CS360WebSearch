@@ -40,7 +40,7 @@ public class Spider {
 			d.print();
 		
 		for(String u : page.getLinks())
-			if(DatabaseManager.hasLocation(u) != -1)
+			if(DatabaseManager.getLocation(u) != -1)
 				queue.add(u);
 		
 		numOfSearches--;
