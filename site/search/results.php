@@ -77,15 +77,25 @@ else {
 	//sort web array based on all key weights
 	arsort($webArray);
 
+	$websiteRowQuery = "SELECT * FROM locations ";
+	$firstRow = true;
 	foreach ($webArray as $webID => $wordWeight) {
-		$website = $mysqli->query("SELECT * FROM locations WHERE webId LIKE '$webID'");
+		if ($firstRow == true) {
+			$websiteRowQuery += "WHERE webId LIKE '$webID'";
+			$firstRow = false;
+		}
+		else
+			$websiteRowQuery += " OR WHERE webId LIKE '$webID'";
+	}
 
+	$websiteRows = $mysqli->query($websiteRowQuery);
+	while ($website = $websiteRows>fetch_row()) {
 		$runrows = $website->fetch_assoc();
 		$title = $runrows ['name'];
 		$desc = $runrows ['description'];
 		$url = $runrows ['url'];
 		
-		echo "<p><a href='http://$url'> <b> $title </b> </a> <br> $desc <br> <a href='http://$url'> $url </a></p>";
+		echo "<p><a href='http\://$url'> <b> $title </b> </a> <br> $desc <br> <a href='http\://$url'> $url </a></p>";
 	}
 }
 
