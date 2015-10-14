@@ -2,11 +2,10 @@
 public class Data {
 
 	String word;
-	int weight, URLIndex;
+	int weight;
 	
-	public Data(String word, int URLIndex){
+	public Data(String word){
 		this.word = word;
-		this.URLIndex = URLIndex;
 		weight = 1;
 	}
 	
@@ -16,6 +15,6 @@ public class Data {
 	}
 	
 	public void print(){
-		System.out.println(weight + "\t" + URLIndex + "\t" + word);
+		System.out.println(weight + "\t" + word);
 	}
 }

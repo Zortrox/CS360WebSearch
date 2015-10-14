@@ -8,16 +8,13 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * A tool for parsing the webpage data to collect information.
- * @author Ploaj
- *
+ * A tool for parsing the webpage data to collect information useful for building a search engine.
  */
 public class PageParser {
 	
 	String url, title;
 	ArrayList<String> links;
 	ArrayList<Data> dataNodes;
-	int pageIndex;
 	String preview = "";
 	String[] lowWeight = {"of","a","the","and","is","in","to","all","in"};
 	// we are also gonna need a dictionary of words and a way to determine weights
@@ -60,9 +57,10 @@ public class PageParser {
 		
 		String text = gatherText(src);
 		
+		text = text.replaceAll("\\s+"," ");
 		System.out.println(text);
 		
-		preview = text.substring(397)+"...";
+		preview = text.substring(200)+"...";
 
 		// remove punctuation for now
 		text = text.replaceAll("\\.", "");
@@ -71,20 +69,11 @@ public class PageParser {
 		
 		String[] words = text.split(" ");
 		
-		
-		//temp
-		pageIndex = 0;
-		
-		
 		for(int w = 0 ; w < words.length ; w++)
 			addData(words[w], (int)((0.0 + words.length - w) / words.length * 100.0));
 		
+		//---------------------------------------------------------------------------------------------------Remove eventually
 		Collections.sort(dataNodes,new OrderNode());
-		
-//		for(Data d : dataNodes)
-//			d.print();
-		
-		
 	}
 	
 	class OrderNode implements Comparator<Data>{
@@ -155,13 +144,6 @@ public class PageParser {
 		return code;
 	}
 	
-//	private int getLinkCode(String link){
-//		int code = 0;
-//		for(int i = 0 ; i < link.length() ; i++)
-//			code += link.charAt(i)+i;
-//		return code;
-//	}
-	
 //	private void gatherHeadings(String src){
 //		
 //	}
@@ -192,13 +174,13 @@ public class PageParser {
 	}
 	
 	private void addData(String in, int weight){
-		Data d = new Data(in, pageIndex);
+		Data d = new Data(in);
 
 		d.weight += weight;
 		
 		if(!dataNodes.contains(d)){
 			if(title.toLowerCase().contains(in.toLowerCase()))
-				d.weight += 60;
+				d.weight += 100;
 			for(int i = 0 ; i < lowWeight.length ; i ++)
 				if(lowWeight[i].equals(in))
 					d.weight /= 4;
@@ -211,17 +193,12 @@ public class PageParser {
 		
 	}
 	
-	public ArrayList<Data> getPageData(String[] words){
-		return null;
-	}
-	
 	/**
 	 * Removes the html tags and their content "<" to ">" from the string
 	 * @param input string
 	 * @return the string without html tags
 	 */
 	private static String clearTags(String input){
-		
 		String edited = "";
 		
 		for(int i = 0; i < input.length() ; i++){
@@ -233,11 +210,6 @@ public class PageParser {
 		
 		return edited;
 	}
-	
-//	private static String removeArticles(String input){
-//		
-//		return null;
-//	}
 	
 	public ArrayList<String> getLinks(){
 		return links;

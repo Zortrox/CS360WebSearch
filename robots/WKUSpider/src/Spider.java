@@ -29,14 +29,14 @@ public class Spider {
 		
 		PageParser page = new PageParser(url);
 		
-		DatabaseManager.addLocation(page.url, page.title, page.preview, "lalalalalala");
+		DatabaseManager.addLocation(page.url, page.title, page.preview, "");
 //		DatabaseManager.addKeyWords(page.getData());
 		
 		for(Data d : page.getData())
 			d.print();
 		
 		for(String u : page.getLinks())
-			if(!DatabaseManager.hasLocation(u))
+			if(DatabaseManager.hasLocation(u) != -1)
 				queue.add(u);
 		
 		numOfSearches--;

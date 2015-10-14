@@ -21,9 +21,9 @@ public class DatabaseManager {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			
-			System.out.println("Starting connection test...");
+			System.out.println("Creating connection...");
 			connection = DriverManager.getConnection(url,user,pass);
-			System.out.println("Connection Established! Ready to test print a database...");
+			System.out.println("Connection established!");
 			
 			return true;
 			
@@ -37,44 +37,63 @@ public class DatabaseManager {
 		try {
 			connection.close();
 			pst.close();
+			System.out.println("Connection closed");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	
 	/**
 	 * Checks if the database already has this location stored
 	 * @param url - the URL to check
-	 * @return true is the database contains this location and false otherwise
+	 * @return the locaion of the URL
 	 */
-	public static boolean hasLocation(String url){
+	public static int hasLocation(String url){
 		try {
 			pst = connection.prepareStatement("SELECT * FROM locations");
 	        rs = pst.executeQuery();
 	        
 	        while (rs.next()) {
 	        	if(rs.getString(4).equals(url))
-	        		return true;
+	        		return rs.getInt(1);
 	        }
 	        
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return -1;
 	}
 	
 	//(webId, name, description, url, hash)
-	public static boolean addLocation(String url, String name, String description, String hash){
+	/**
+	 * Adds a new location to the database
+	 * @param url - the URL of the page
+	 * @param name - the Title of the page
+	 * @param description - A description of the page
+	 * @param hash - a has of the page
+	 * @return the index of the location
+	 */
+	public static int addLocation(String url, String name, String description, String hash){
 		try {
 			
-			pst = connection.prepareStatement("insert into locations (webId, name, description, url, hash) "
-					+ "values ("+3+", "+name+", "+description+", "+url+", "+hash+")");
-			return pst.execute();
+			pst = connection.prepareStatement("INSERT INTO locations (webId, name, description, url, hash)"
+					+ " values (?, ?, ?, ?, ?)");
+			
+			pst.setInt(1, 3);
+			pst.setString(2,name);
+			pst.setString(3, description);
+			pst.setString(4, url);
+			pst.setString(5, hash);
+			
+			pst.execute();
+			
+			return 3;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return -1;
 	}
 	
 	
@@ -83,6 +102,8 @@ public class DatabaseManager {
 	}
 	
 	public static void clearKeywordsForPage(String url){
+		
+		
 		
 	}
 	
