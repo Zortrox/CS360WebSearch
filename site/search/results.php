@@ -93,8 +93,12 @@ else {
 		$title = $website['name'];
 		$desc = $website['description'];
 		$url = $website['url'];
-		
-		echo "<p><a href='http://$url'> <b> $title </b> </a> <br> $desc <br> <a href='http://$url'> $url </a></p>";
+
+		if (substr($url, 0, 4) != "http") {
+			$url = "http://" . $url;
+		}
+
+		echo "<p><a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a></p>";
 	}
 }
 
