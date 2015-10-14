@@ -29,6 +29,14 @@ if ($result = $mysqli->query($sql)) {
 
 //mysql_select_db($database);
 
+//create array of strings in query **IN PROGRESS**
+$moreStrings = false;
+$queryPart = $query
+while ($moreStrings) {
+	$stringPos1 = strpos($queryPart, "\"")
+	$queryPart = substr($queryPart, )
+}
+
 $query_exploded = explode(" ", $query );
 $x = 0;
 $construct = "";
@@ -50,12 +58,27 @@ if ($foundnum == 0)
 else {		 
 	echo "<p>$foundnum result(s) found!</p>";
 
+	$webArray = array();
 	while ($resultsRow = $run->fetch_row()) {
 		$resultID = $resultsRow[0];
 		$webIDQuery = "SELECT webId FROM siteKeywords WHERE keyId LIKE '$resultID'";
 		$webIDResults = $mysqli->query($webIDQuery);
 
-		$webID = $webIDResults->fetch_row()[0];
+		$siteKeywordsRow = $webIDResults->fetch_row();
+		$webID = $siteKeywordsRow[0];
+		$wordWeight = $siteKeywordsRow[2];
+		if (in_array($webArray, $webID)) {
+			$webArray[$webID] += $wordWeight;
+		} else {
+			$webArray[$webID] = $wordWeight;
+		}
+	}
+
+	//sort web array based on all key weights
+	arsort($webArray);
+
+	foreach ($webArray as $wordWeight) {
+		$webID = key($webArray);
 		$website = $mysqli->query("SELECT * FROM locations WHERE webId LIKE '$webID'");
 
 		$runrows = $website->fetch_assoc();
