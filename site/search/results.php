@@ -55,7 +55,7 @@ $foundnum = $run->num_rows;
 
 if ($foundnum == 0)
 	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";   
-else {		 
+else {
 	echo "<p>$foundnum result(s) found!</p>";
 
 	$webArray = array();
