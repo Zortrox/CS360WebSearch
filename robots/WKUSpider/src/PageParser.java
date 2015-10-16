@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 /**
@@ -58,20 +57,24 @@ public class PageParser {
 		text = text.replaceAll("\\s+"," ");
 		System.out.println(text);
 		
-		preview = text.substring(0,50)+"...";
+		preview = text.substring(0,295)+"...";
 
 		// remove punctuation for now
 		text = text.replaceAll("\\.", "");
 		text = text.replaceAll("\\:", "");
 		text = text.replaceAll(",", "");
 		
-		String[] words = text.split(" ");
 		
+		String[] titleWords = title.split(" ");
+		for(int i = 0 ; i < title.length() ; i++)
+			addData(titleWords[i], 70);
+
+		String[] words = text.split(" ");
 		for(int w = 0 ; w < words.length ; w++)
 			addData(words[w], (int)((0.0 + words.length - w) / words.length * 100.0));
 		
 		//---------------------------------------------------------------------------------------------------Remove eventually
-		Collections.sort(dataNodes,new OrderNode());
+//		Collections.sort(dataNodes,new OrderNode());
 	}
 	
 	// This is just for display purposes. Can be deleted later...
