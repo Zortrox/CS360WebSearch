@@ -55,7 +55,7 @@ public class PageParser {
 		String text = gatherText(src);
 		
 		text = text.replaceAll("\\s+"," ");
-		System.out.println(text);
+//		System.out.println(text);
 		
 		preview = text.substring(0,295)+"...";
 
@@ -66,7 +66,7 @@ public class PageParser {
 		
 		
 		String[] titleWords = title.split(" ");
-		for(int i = 0 ; i < title.length() ; i++)
+		for(int i = 0 ; i < titleWords.length ; i++)
 			addData(titleWords[i], 70);
 
 		String[] words = text.split(" ");
@@ -189,7 +189,10 @@ public class PageParser {
 		}
 		else{
 			d = dataNodes.get(dataNodes.indexOf(d));
-			d.weight += 1;
+			d.weight += 10;
+			for(int i = 0 ; i < lowWeight.length ; i ++)
+				if(lowWeight[i].equals(in))
+					d.weight /= 4;
 		}
 		
 	}

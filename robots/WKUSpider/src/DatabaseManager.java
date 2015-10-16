@@ -84,7 +84,7 @@ public class DatabaseManager {
 	        
 	        while (rs.next()) 
 	        	if(rs.getString(4).equals(url)){
-	        		pst = connection.prepareStatement("update locations set description = ? where webId = ?");
+	        		pst = connection.prepareStatement("UPDATE locations SET description = ? WHERE webId = ?");
 	        		pst.setString(1, description);
 	        		pst.setInt(2, rs.getInt(1));
 	        		pst.execute();
@@ -150,7 +150,7 @@ public class DatabaseManager {
 			
 			try {		      
 				
-				pst = connection.prepareStatement("SELECT * FROM keywords");
+				pst = connection.prepareStatement("SELECT * FROM siteKeywords");
 		        rs = pst.executeQuery();
 		        
 		        while (rs.next()) 
