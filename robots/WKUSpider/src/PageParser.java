@@ -163,7 +163,7 @@ public class PageParser {
 //		name="description" content="
 		if(src.contains("name=\"description\" content=\"")){
 			String code = src.substring(src
-					.indexOf("name=\"description\" content=\"") + 7);
+					.indexOf("name=\"description\" content=\"") + 28);
 			code = code.substring(0, code.indexOf("\">"));
 
 			return code;
@@ -176,7 +176,7 @@ public class PageParser {
 //		name="description" content="
 		if(src.contains("name=\"keywords\" content=\"")){
 			String code = src.substring(src
-					.indexOf("name=\"description\" content=\"") + 7);
+					.indexOf("name=\"keywords\" content=\"") + 25);
 			code = code.substring(0, code.indexOf("\">"));
 			
 			code.replaceAll(" ", "");
