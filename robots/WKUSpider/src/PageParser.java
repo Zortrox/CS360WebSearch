@@ -57,13 +57,19 @@ public class PageParser {
 		text = text.replaceAll("\\s+"," ");
 //		System.out.println(text);
 		
-		preview = text.substring(0,text.length() >= 295 ? 295 : text.length())+"...";
+		preview = getDescription(src);
+		
+		if(preview.equals(""))
+			preview = text.substring(0,text.length() >= 295 ? 295 : text.length())+"...";
 
 		// remove punctuation for now
 		text = text.replaceAll("\\.", "");
 		text = text.replaceAll("\\:", "");
 		text = text.replaceAll(",", "");
 		
+		String[] keywords = getKeywords(src);
+		for(int i = 0 ; i < keywords.length ; i++)
+			addData(keywords[i], 100);
 		
 		String[] titleWords = title.split(" ");
 		for(int i = 0 ; i < titleWords.length ; i++)
@@ -143,10 +149,42 @@ public class PageParser {
 	 * @return The title of the page
 	 */
 	private String getTitle(String src){
-		String code = src.substring(src.indexOf("<title>")+7);
-		code = code.substring(0,code.indexOf("</title>"));
-		
-		return code;
+		if (src.contains("<title>")) {
+			String code = src.substring(src.indexOf("<title>") + 7);
+			code = code.substring(0, code.indexOf("</title>"));
+
+			return code;
+		}
+		else 
+			return "";
+	}
+	
+	private String getDescription(String src){
+//		name="description" content="
+		if(src.contains("name=\"description\" content=\"")){
+			String code = src.substring(src
+					.indexOf("name=\"description\" content=\"") + 7);
+			code = code.substring(0, code.indexOf("\">"));
+
+			return code;
+		}
+		else
+			return "";
+	}
+	
+	private String[] getKeywords(String src){
+//		name="description" content="
+		if(src.contains("name=\"keywords\" content=\"")){
+			String code = src.substring(src
+					.indexOf("name=\"description\" content=\"") + 7);
+			code = code.substring(0, code.indexOf("\">"));
+			
+			code.replaceAll(" ", "");
+
+			return code.split(",");
+		}
+		else
+			return null;
 	}
 	
 	private String gatherText(String src){

@@ -8,12 +8,26 @@ public class Testing {
 		DatabaseManager.Initialize();
 		
 		if (args[0].equals("-display")) {
-			DatabaseManager.printLocationDatabase();
-			System.out.println("\n");
-			DatabaseManager.printKeywordDatabase();
-			System.out.println("\n");
-			DatabaseManager.printDataDatabase();
 			
+			if(args.length < 2){
+				System.out.println("Enter name of database after -display");
+				return;
+			}
+			
+			switch(args[1]){
+			case "locations":
+				DatabaseManager.printLocationDatabase();
+				break;
+			case "keywords":
+				DatabaseManager.printKeywordDatabase();
+				break;
+			case "siteKeywords":
+				DatabaseManager.printDataDatabase();
+				break;
+			default:
+				System.out.println("Unknown command:\nUse name of database");
+				
+			}
 			DatabaseManager.Exit();
 			
 			return;
