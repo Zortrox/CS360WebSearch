@@ -97,7 +97,7 @@ else {
 
 	$endTime = microtime(true);
 	$totalTime = $startTime - $endTime;
-	echo "$totalTime seconds</p>"
+	echo "$totalTime seconds</p>";
 
 	$websiteRows = $mysqli->query($websiteRowQuery);
 	while ($website = $websiteRows->fetch_assoc()) {
