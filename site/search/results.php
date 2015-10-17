@@ -96,7 +96,7 @@ else {
 	echo "<p>$sitesFound result$plural found in ";
 
 	$endTime = microtime(true);
-	$totalTime = $startTime - $endTime;
+	$totalTime = round($endTime - $startTime, 3);
 	echo "$totalTime seconds</p>";
 
 	$websiteRows = $mysqli->query($websiteRowQuery);
