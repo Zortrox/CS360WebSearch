@@ -1,6 +1,10 @@
 <?php
 //$query variable is the user's search
 
+//timing setup
+$startTime = microtime(true);
+$endTime = null;
+
 $user = "web";
 $pass = "webSearch!";
 $database = "webSearchEngine";
@@ -72,10 +76,6 @@ else {
 		}
 	}
 
-	$sitesFound = count($webArray);
-	$plural = $sitesFound > 1 ? "s" : "";
-	echo "<p>$sitesFound result$plural found!</p>";
-
 	//sort web array based on all key weights
 	arsort($webArray);
 
@@ -90,8 +90,17 @@ else {
 			$websiteRowQuery .= " OR webId LIKE '$webID'";
 	}
 
+	//display number of results found
+	$sitesFound = count($webArray);
+	$plural = $sitesFound > 1 ? "s" : "";
+	echo "<p>$sitesFound result$plural found in ";
+
+	$endTime = microtime(true);
+	$totalTime = $startTime - $endTime;
+	echo "$totalTime seconds</p>"
+
 	$websiteRows = $mysqli->query($websiteRowQuery);
-	while ($website = $websiteRows->fetch_assoc()) { 
+	while ($website = $websiteRows->fetch_assoc()) {
 		$title = $website['name'];
 		$desc = $website['description'];
 		$url = $website['url'];
