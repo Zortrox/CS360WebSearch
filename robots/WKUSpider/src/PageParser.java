@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 /**
@@ -56,22 +55,32 @@ public class PageParser {
 		String text = gatherText(src);
 		
 		text = text.replaceAll("\\s+"," ");
-		System.out.println(text);
+//		System.out.println(text);
 		
-		preview = text.substring(0,50)+"...";
+		preview = getDescription(src);
+		
+		if(preview.equals(""))
+			preview = text.substring(0,text.length() >= 295 ? 295 : text.length())+"...";
 
 		// remove punctuation for now
 		text = text.replaceAll("\\.", "");
 		text = text.replaceAll("\\:", "");
 		text = text.replaceAll(",", "");
 		
-		String[] words = text.split(" ");
+		String[] keywords = getKeywords(src);
+		for(int i = 0 ; i < keywords.length ; i++)
+			addData(keywords[i], 100);
 		
+		String[] titleWords = title.split(" ");
+		for(int i = 0 ; i < titleWords.length ; i++)
+			addData(titleWords[i], 70);
+
+		String[] words = text.split(" ");
 		for(int w = 0 ; w < words.length ; w++)
 			addData(words[w], (int)((0.0 + words.length - w) / words.length * 100.0));
 		
 		//---------------------------------------------------------------------------------------------------Remove eventually
-		Collections.sort(dataNodes,new OrderNode());
+//		Collections.sort(dataNodes,new OrderNode());
 	}
 	
 	// This is just for display purposes. Can be deleted later...
@@ -140,10 +149,42 @@ public class PageParser {
 	 * @return The title of the page
 	 */
 	private String getTitle(String src){
-		String code = src.substring(src.indexOf("<title>")+7);
-		code = code.substring(0,code.indexOf("</title>"));
-		
-		return code;
+		if (src.contains("<title>")) {
+			String code = src.substring(src.indexOf("<title>") + 7);
+			code = code.substring(0, code.indexOf("</title>"));
+
+			return code;
+		}
+		else 
+			return "";
+	}
+	
+	private String getDescription(String src){
+//		name="description" content="
+		if(src.contains("name=\"description\" content=\"")){
+			String code = src.substring(src
+					.indexOf("name=\"description\" content=\"") + 28);
+			code = code.substring(0, code.indexOf("\">"));
+
+			return code;
+		}
+		else
+			return "";
+	}
+	
+	private String[] getKeywords(String src){
+//		name="description" content="
+		if(src.contains("name=\"keywords\" content=\"")){
+			String code = src.substring(src
+					.indexOf("name=\"keywords\" content=\"") + 25);
+			code = code.substring(0, code.indexOf("\">"));
+			
+			code.replaceAll(" ", "");
+
+			return code.split(",");
+		}
+		else
+			return null;
 	}
 	
 	private String gatherText(String src){
@@ -186,7 +227,10 @@ public class PageParser {
 		}
 		else{
 			d = dataNodes.get(dataNodes.indexOf(d));
-			d.weight += 1;
+			d.weight += 10;
+			for(int i = 0 ; i < lowWeight.length ; i ++)
+				if(lowWeight[i].equals(in))
+					d.weight /= 4;
 		}
 		
 	}

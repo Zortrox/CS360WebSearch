@@ -31,18 +31,18 @@ public class Spider {
 			return;
 		}
 		
-		if (DatabaseManager.getLocation(url) != -1) {
-			PageParser page = new PageParser(url);
 
-			int pageID = DatabaseManager.addLocation(page.url, page.title,
-					page.preview, "");
+		PageParser page = new PageParser(url);
 
-			DatabaseManager.addData(page.getData(), pageID);
+		int pageID = DatabaseManager.addLocation(page.url, page.title,
+				page.preview, "");
 
-			for (String u : page.getLinks())
-				if (DatabaseManager.getLocation(u) == -1)
-					queue.add(u);
-		}
+		DatabaseManager.addData(page.getData(), pageID);
+
+		for (String u : page.getLinks())
+			if (DatabaseManager.getLocation(u) == -1)
+				queue.add(u);
+
 		numOfSearches--;
 		run(queue.remove());
 		

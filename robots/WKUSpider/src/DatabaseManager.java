@@ -3,6 +3,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class DatabaseManager {
@@ -80,25 +81,30 @@ public class DatabaseManager {
 			
 			pst = connection.prepareStatement("SELECT * FROM locations");
 	        rs = pst.executeQuery();
-	        int loc = 1;
 	        
-	        while (rs.next()) {
-	        	if(rs.getString(4).equals(url))
+	        while (rs.next()) 
+	        	if(rs.getString(4).equals(url)){
+	        		pst = connection.prepareStatement("UPDATE locations SET description = ? WHERE webId = ?");
+	        		pst.setString(1, description);
+	        		pst.setInt(2, rs.getInt(1));
+	        		pst.execute();
 	        		return rs.getInt(1);
-	        	loc++;
-	        }
+	        	}
 			
 			pst = connection.prepareStatement("INSERT INTO locations (name, description, url, hash)"
-					+ " values (?, ?, ?, ?)");
+					+ " values (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			
 			pst.setString(1, name);
 			pst.setString(2, description);
 			pst.setString(3, url);
 			pst.setString(4, hash);
 			
-			pst.execute();
+			pst.executeUpdate();
 			
-			return loc;
+			ResultSet rs = pst.getGeneratedKeys();
+			rs.next();
+			
+			return rs.getInt(1);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -111,20 +117,20 @@ public class DatabaseManager {
 		try {
 			pst = connection.prepareStatement("SELECT * FROM keywords");
 	        rs = pst.executeQuery();
-	        int size = 1;
 	        
-	        while (rs.next()) {
+	        while (rs.next()) 
 	        	if(rs.getString(2).equals(keyword.toLowerCase()))
 	        		return rs.getInt(1);
-	        	size++;
-	        }
 	        
 			pst = connection.prepareStatement("INSERT INTO keywords (word)"
-					+ " values (?)");
+					+ " values (?)", Statement.RETURN_GENERATED_KEYS);
 			pst.setString(1,keyword.toLowerCase());
-			pst.execute();
+			pst.executeUpdate();
 			
-			return size;
+			ResultSet rs = pst.getGeneratedKeys();
+			rs.next();
+			
+			return rs.getInt(1);
 	        
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -142,7 +148,18 @@ public class DatabaseManager {
 			if(keyID == -1)
 				continue;
 			
-			try {		        
+			try {		      
+				
+				pst = connection.prepareStatement("SELECT * FROM siteKeywords");
+		        rs = pst.executeQuery();
+		        
+		        while (rs.next()) 
+		        	if(rs.getInt(1) == pageID && rs.getInt(2) == keyID){
+		        		pst = connection.prepareStatement("delete from siteKeywords where webID = "+pageID+" and keyID = "+keyID);
+		        		pst.execute();
+		        		break;
+		        	}
+				
 				pst = connection.prepareStatement("INSERT INTO siteKeywords (webId, keyId, weight)"
 						+ " values (?, ?, ?)");
 				pst.setInt(1,pageID);
@@ -159,6 +176,11 @@ public class DatabaseManager {
 	public static void clearDataForPage(String url){
 		
 		
+		
+	}
+	
+	
+	public static void clearData(){
 		
 	}
 	
