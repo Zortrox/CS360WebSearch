@@ -51,13 +51,11 @@ foreach( $query_exploded as $query_each ) {
 $construct = "SELECT * FROM keywords WHERE $construct";
 $run = $mysqli->query($construct);
 
-$foundnum = $run->num_rows;
+$keysFound = $run->num_rows;
 
-if ($foundnum == 0)
-	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";   
+if ($keysFound == 0)
+	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";
 else {
-	echo "<p>$foundnum result(s) found!</p>";
-
 	$webArray = array();
 	while ($resultsRow = $run->fetch_row()) {
 		$resultID = $resultsRow[0];
@@ -73,6 +71,10 @@ else {
 			$webArray[$webID] = $wordWeight;
 		}
 	}
+
+	$sitesFound = count($webArray);
+	$plural = $sitesFound > 1 ? "s" : "";
+	echo "<p>$sitesFound result$plural found!</p>";
 
 	//sort web array based on all key weights
 	arsort($webArray);
