@@ -93,11 +93,11 @@ else {
 	//display number of results found
 	$sitesFound = count($webArray);
 	$plural = $sitesFound > 1 ? "s" : "";
-	echo "<p><i>$sitesFound result$plural found in ";
+	echo "<p>$sitesFound result$plural found in ";
 
 	$endTime = microtime(true);
 	$totalTime = round($endTime - $startTime, 3);
-	echo "$totalTime seconds</i></p>";
+	echo "<i>$totalTime seconds</i></p>";
 
 	$websiteRows = $mysqli->query($websiteRowQuery);
 	while ($website = $websiteRows->fetch_assoc()) {
