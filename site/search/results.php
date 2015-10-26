@@ -56,7 +56,7 @@ $keywordRows = $mysqli->query($keywordQuery);
 $keysFound = $keywordRows->num_rows;
 
 if ($querySplit[0] == "")
-	echo "You must input a query";
+	echo "You must input a query.";
 else if ($keysFound == 0)
 	echo "Sorry, there are no matching result for <b> $query </b>.";
 else {
