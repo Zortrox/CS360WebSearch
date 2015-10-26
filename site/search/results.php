@@ -37,11 +37,12 @@ function createConstruct($wordArray, $column, $useKey = false) {
 			else 
 				$construct .= "$column LIKE '$wordValue'";
 			$firstRow = false;
-		else
+		} else {
 			if ($useKey) 
 				$construct .= " OR $column LIKE '$wordKey'";
 			else 
 				$construct .= " OR $column LIKE '$wordValue'";
+		}
 	}
 
 	return $construct;
