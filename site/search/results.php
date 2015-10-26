@@ -51,15 +51,14 @@ function createConstruct($wordArray, $column, $useKey = false) {
 //get all keyword rows from database based on user-inputted words
 //$query variable is the user's search
 $querySplit = preg_split('/\s+/', trim($query));
-$keysFound = 0;
-if ($querySplit[0] != "") {
-	$keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "word");
-	$keywordRows = $mysqli->query($keywordQuery);
-	$keysFound = $keywordRows->num_rows;
-}
+$keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "word");
+$keywordRows = $mysqli->query($keywordQuery);
+$keysFound = $keywordRows->num_rows;
 
-if ($keysFound == 0)
-	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";
+if ($querySplit[0] == "")
+	echo "You must input a query";
+else if ($keysFound == 0)
+	echo "Sorry, there are no matching result for <b> $query </b>.";
 else {
 	//get all keyIds of the user-inputted keywords
 	$keyArray = array();
