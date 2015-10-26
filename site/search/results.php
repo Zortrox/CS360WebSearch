@@ -1,5 +1,4 @@
 <?php
-//$query variable is the user's search
 
 //timing setup
 $startTime = microtime(true);
@@ -48,9 +47,11 @@ function createConstruct($wordArray, $column, $useKey = false) {
 	return $construct;
 }
 
+//create array based on user-inputted words
 //get all keyword rows from database based on user-inputted words
-$queryExploded = explode(" ", $query );
-$keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($queryExploded, "word");
+//$query variable is the user's search
+$querySplit = preg_split('/\s+/', trim($query));
+$keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "word");
 $keywordRows = $mysqli->query($keywordQuery);
 $keysFound = $keywordRows->num_rows;
 
