@@ -1,23 +1,40 @@
-import java.util.LinkedList;
 import java.util.Queue;
 
-public class Spider {
+public class Spider extends Thread{
 
-	private String startingPoint = "";
-	private int numOfSearches = 0;
-	Queue<String> queue = new LinkedList<String>();
+	int id;
+	int numOfSearches = 0;
+	SpiderThread controller;
+	Queue<String> links;
 	
-	public Spider(String startingPoint, int numOfSearches) {
-		this.startingPoint = startingPoint;
+	public Spider(int id, int numOfSearches, SpiderThread con) {
 		this.numOfSearches = numOfSearches;
+		this.id = id;
+		this.controller = con;
+		links = con.links;
 	}
 	
 	/**
-	 * Starts the crawling based on previous set parameters
+	 * Starts the crawling on a new thread.
+	 * If the links queue is currently empty, then wait a few seconds for another spider to populate it
 	 */
-	public void crawl(){
-		queue.add(startingPoint);
-		run(startingPoint);
+	public void run(){
+		if(links.isEmpty())
+			try {
+				System.out.println("Thread " + (id == -1 ? "Initial" : id) + " is waiting for links");
+				Thread.sleep(3000*id);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		if(!links.isEmpty()){
+			System.out.println("Thread " + (id == -1 ? "Initial" : id) + " is starting");
+			run(links.remove());
+			System.out.println("Thread " + (id == -1 ? "Initial" : id) + " is finished");
+		} else{
+			System.out.println("Thread " + (id == -1 ? "Initial" : id) + " found no links!");
+		}
 	}
 
 	/**
@@ -25,26 +42,32 @@ public class Spider {
 	 * @param url
 	 */
 	private void run(String url){
+		System.out.println("Spider " + id + " is crawling... " + url);
 		
-		if(numOfSearches == 0 || queue.isEmpty()){
-			System.out.println("Crawling Complete");
+		controller.numOfPages++;
+		
+		if(numOfSearches == 0)
 			return;
+		
+		PageParser page = new PageParser(url);
+		
+		if(!page.isEmpty){
+		
+			// int pageID = DatabaseManager.addLocation(page.url, page.title,
+			// page.preview, page.text);
+			//
+			// if(pageID != -1)
+			// DatabaseManager.addData(page.getData(), pageID);
+
+			for (String u : page.getLinks())
+				// if(DatabaseManager.getLocation(u) == -1)
+				links.add(u);
 		}
 		
-
-		PageParser page = new PageParser(url);
-
-		int pageID = DatabaseManager.addLocation(page.url, page.title,
-				page.preview, "");
-
-		DatabaseManager.addData(page.getData(), pageID);
-
-		for (String u : page.getLinks())
-			if (DatabaseManager.getLocation(u) == -1)
-				queue.add(u);
+		if(links.isEmpty())
+			return;
 
 		numOfSearches--;
-		run(queue.remove());
-		
+		run(links.remove());
 	}
 }

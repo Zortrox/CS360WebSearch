@@ -37,8 +37,6 @@ public class DatabaseManager {
 	public static void Exit(){
 		try {
 			connection.close();
-			pst.close();
-			System.out.println("\n");
 			System.out.println("Connection closed");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -76,7 +74,7 @@ public class DatabaseManager {
 	 * @param hash - a has of the page
 	 * @return the index of the location
 	 */
-	public static int addLocation(String url, String name, String description, String hash){
+	public static int addLocation(String url, String name, String description, String fulltext){
 		try {
 			
 			pst = connection.prepareStatement("SELECT * FROM locations");
@@ -91,13 +89,13 @@ public class DatabaseManager {
 	        		return rs.getInt(1);
 	        	}
 			
-			pst = connection.prepareStatement("INSERT INTO locations (name, description, url, hash)"
+			pst = connection.prepareStatement("INSERT INTO locations (name, description, url, siteFullText)"
 					+ " values (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			
 			pst.setString(1, name);
 			pst.setString(2, description);
 			pst.setString(3, url);
-			pst.setString(4, hash);
+			pst.setString(4, fulltext);
 			
 			pst.executeUpdate();
 			
@@ -122,8 +120,12 @@ public class DatabaseManager {
 	        	if(rs.getString(2).equals(keyword.toLowerCase()))
 	        		return rs.getInt(1);
 	        
-			pst = connection.prepareStatement("INSERT INTO keywords (word)"
-					+ " values (?)", Statement.RETURN_GENERATED_KEYS);
+	        if(keyword.length() >= 15){
+	        	System.out.println(keyword + " too long for keyword column");
+	        	return -1;
+	        }
+	        
+			pst = connection.prepareStatement("INSERT INTO keywords (word) "+ "values (?)", Statement.RETURN_GENERATED_KEYS);
 			pst.setString(1,keyword.toLowerCase());
 			pst.executeUpdate();
 			
@@ -141,6 +143,7 @@ public class DatabaseManager {
 	
 	public static void addData(ArrayList<Data> data, int pageID){
 		
+		loop:
 		for(Data d : data){
 			int keyID = addKeyword(d.word);
 			
@@ -155,9 +158,12 @@ public class DatabaseManager {
 		        
 		        while (rs.next()) 
 		        	if(rs.getInt(1) == pageID && rs.getInt(2) == keyID){
-		        		pst = connection.prepareStatement("delete from siteKeywords where webID = "+pageID+" and keyID = "+keyID);
+		        		pst = connection.prepareStatement("UPDATE siteKeywords SET weight = ? WHERE webId = ? AND keyID = ?");
+		        		pst.setInt(1, d.weight);
+		        		pst.setInt(2, pageID);
+		        		pst.setInt(3, keyID);
 		        		pst.execute();
-		        		break;
+		        		continue loop;
 		        	}
 				
 				pst = connection.prepareStatement("INSERT INTO siteKeywords (webId, keyId, weight)"

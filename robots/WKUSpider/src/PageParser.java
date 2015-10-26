@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -16,6 +17,8 @@ public class PageParser {
 	ArrayList<Data> dataNodes;
 	String preview = "";
 	String[] lowWeight = {"of","a","the","and","is","in","to","all","in"};
+	String text = "";
+	boolean isEmpty;
 	// we are also gonna need a dictionary of words and a way to determine weights	
 	
 	//161.6.0.0 - 161.6.255.255
@@ -37,7 +40,16 @@ public class PageParser {
 		this.url = url;
 		
 		// the source code of the page
-		String src = getSource(url);
+		String src = null;
+		try {
+			src = getSource(url);
+		} catch (FileNotFoundException e) {
+			System.out.println("Above link 404?");
+			return;
+		}
+		
+		if(src==null)
+			isEmpty = true;
 		
 		links = new ArrayList<String>();
 		dataNodes = new ArrayList<Data>();
@@ -55,6 +67,7 @@ public class PageParser {
 		String text = gatherText(src);
 		
 		text = text.replaceAll("\\s+"," ");
+		this.text = text;
 //		System.out.println(text);
 		
 		preview = getDescription(src);
@@ -68,8 +81,9 @@ public class PageParser {
 		text = text.replaceAll(",", "");
 		
 		String[] keywords = getKeywords(src);
-		for(int i = 0 ; i < keywords.length ; i++)
-			addData(keywords[i], 100);
+		if(keywords != null)
+			for(int i = 0 ; i < keywords.length ; i++)
+				addData(keywords[i], 100);
 		
 		String[] titleWords = title.split(" ");
 		for(int i = 0 ; i < titleWords.length ; i++)
@@ -193,13 +207,14 @@ public class PageParser {
 		int index = src.indexOf("<p>");
 		
 		if(index == -1)
-			return null;
+			return "";
 		
 		String code = src.substring(index+3);
 		
 		while (true) {
 			
-			text += clearTags(code.substring(0,code.indexOf("</p>")));
+			if(code.contains("</p>"))
+				text += clearTags(code.substring(0,code.indexOf("</p>")));
 
 			index = code.indexOf("<p>");
 			
@@ -273,7 +288,7 @@ public class PageParser {
 	 * @return Source Code as String
 	 * @throws IOException
 	 */
-	private static String getSource(String link){
+	private static String getSource(String link) throws FileNotFoundException{
 		// Gonna go ahead and catch the IO Expection here
         try {
         	// opens a url and buffer
