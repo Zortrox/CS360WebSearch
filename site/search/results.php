@@ -5,10 +5,10 @@
 $startTime = microtime(true);
 $endTime = null;
 
+//setup user and connect
 $user = "web";
 $pass = "webSearch!";
 $database = "webSearchEngine";
-
 $mysqli = new mysqli("localhost", $user, $pass, $database);
 
 /* check connection */
@@ -16,22 +16,6 @@ if (mysqli_connect_errno()) {
 	printf("Connect failed: %s\n", mysqli_connect_error());
 	exit();
 }
-
-/*
-$sql = "SELECT * FROM keywords";
-//return name of current default database
-if ($result = $mysqli->query($sql)) {
-	if ($result->num_rows > 0) {
-		$row = $result->fetch_row();
-		printf("Default keyword is %s. <br>", $row[1]);
-		$result->close();
-	} else {
-		printf("No Data");
-	}
-}
-*/
-
-//mysql_select_db($database);
 
 //create array of strings in query **IN PROGRESS**
 $moreStrings = false;
@@ -41,18 +25,29 @@ while ($moreStrings) {
 	$queryPart = substr($queryPart, 0);
 }
 
-$query_exploded = explode(" ", $query );
-$x = 0;
-$construct = "";
-foreach( $query_exploded as $query_each ) {
-	$x++;
-	if( $x == 1 )
-			$construct .= "word LIKE '$query_each'";
-	else		
-			$construct .= " OR word LIKE '$query_each'";
+function createConstruct($wordArray, $column, $useKey = false) {
+	$construct = "";
+	$firstRow = true;
+
+	foreach( $wordArray as $wordKey => $wordValue ) {
+		if ($firstRow == true) {
+			if ($useKey) 
+				$construct .= "$column LIKE '$wordKey'";
+			else 
+				$construct .= "$column LIKE '$wordValue'";
+			$firstRow = false;
+		else
+			if ($useKey) 
+				$construct .= " OR $column LIKE '$wordKey'";
+			else 
+				$construct .= " OR $column LIKE '$wordValue'";
+	}
+
+	return $construct;
 }
-	
-$construct = "SELECT * FROM keywords WHERE $construct";
+
+$queryExploded = explode(" ", $query );
+$construct = "SELECT * FROM keywords WHERE " . createConstruct($queryExploded, "word");
 $run = $mysqli->query($construct);
 
 $keysFound = $run->num_rows;
@@ -79,8 +74,8 @@ else {
 	//sort web array based on all key weights
 	arsort($webArray);
 
-	$websiteRowQuery = "SELECT * FROM locations WHERE ";
-	$firstRow = true;
+	$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webID", true);
+	
 	foreach ($webArray as $webID => $wordWeight) {
 		if ($firstRow == true) {
 			$websiteRowQuery .= "webId LIKE '$webID'";
