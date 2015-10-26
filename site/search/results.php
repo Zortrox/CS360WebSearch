@@ -11,7 +11,7 @@ $pass = "webSearch!";
 $database = "webSearchEngine";
 $mysqli = new mysqli("localhost", $user, $pass, $database);
 
-/* check connection */
+//check connection
 if (mysqli_connect_errno()) {
 	printf("Connect failed: %s\n", mysqli_connect_error());
 	exit();
@@ -25,6 +25,7 @@ while ($moreStrings) {
 	$queryPart = substr($queryPart, 0);
 }
 
+//creates a partial query that finds values in columns
 function createConstruct($wordArray, $column, $useKey = false) {
 	$construct = "";
 	$firstRow = true;
@@ -46,22 +47,27 @@ function createConstruct($wordArray, $column, $useKey = false) {
 	return $construct;
 }
 
+//get all keyword rows from database based on user-inputted words
 $queryExploded = explode(" ", $query );
-$construct = "SELECT * FROM keywords WHERE " . createConstruct($queryExploded, "word");
-$run = $mysqli->query($construct);
-
-$keysFound = $run->num_rows;
+$keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($queryExploded, "word");
+$keywordRows = $mysqli->query($keywordQuery);
+$keysFound = $keywordRows->num_rows;
 
 if ($keysFound == 0)
 	echo "Sorry, there are no matching result for <b> $query </b>. </br> </br>";
 else {
-	$webArray = array();
-	while ($resultsRow = $run->fetch_row()) {
-		$resultID = $resultsRow[0];
-		$webIDQuery = "SELECT webId FROM siteKeywords WHERE keyId LIKE '$resultID'";
-		$webIDResults = $mysqli->query($webIDQuery);
+	//get all keyIds of the user-inputted keywords
+	$keyArray = array();
+	while ($resultsRow = $keywordRows->fetch_row()) {
+		array_push($keyArray, $resultsRow[0]);
+	}
 
-		$siteKeywordsRow = $webIDResults->fetch_row();
+	//gather all webIds of websites based on keywords found
+	//sort in descending order based on cumulative word weights
+	$webArray = array();
+	$webIDQuery = "SELECT webId FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
+	$webIDResults = $mysqli->query($webIDQuery);
+	while ($siteKeywordsRow = $webIDResults->fetch_row()) {
 		$webID = $siteKeywordsRow[0];
 		$wordWeight = $siteKeywordsRow[2];
 		if (in_array($webArray, $webID)) {
@@ -70,31 +76,20 @@ else {
 			$webArray[$webID] = $wordWeight;
 		}
 	}
-
-	//sort web array based on all key weights
 	arsort($webArray);
 
-	$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webID", true);
-	
-	foreach ($webArray as $webID => $wordWeight) {
-		if ($firstRow == true) {
-			$websiteRowQuery .= "webId LIKE '$webID'";
-			$firstRow = false;
-		}
-		else
-			$websiteRowQuery .= " OR webId LIKE '$webID'";
-	}
+	//get all location data based on webIds found
+	$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
+	$websiteRows = $mysqli->query($websiteRowQuery);
 
-	//display number of results found
+	//display number of results found in how much time
 	$sitesFound = count($webArray);
 	$plural = $sitesFound > 1 ? "s" : "";
 	echo "<p>$sitesFound result$plural found in ";
-
 	$endTime = microtime(true);
 	$totalTime = round($endTime - $startTime, 3);
 	echo "$totalTime seconds</p>";
 
-	$websiteRows = $mysqli->query($websiteRowQuery);
 	while ($website = $websiteRows->fetch_assoc()) {
 		$title = $website['name'];
 		$desc = $website['description'];
