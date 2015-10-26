@@ -3,3 +3,4 @@ commands:
 "a number" and it will index that many pages starting from WKU's homepage
 you can enter a "-1" to have it transverse indefinitly until it runs out of links to follow
 you can enter a different starting location after the number to start there instead
+After the starting location you can enter number of threads to use. Default is 10
