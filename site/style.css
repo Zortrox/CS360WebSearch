@@ -11,10 +11,11 @@ body {
 #wrapper {
 	background-color: #FFF;
 	width: 80%;
-	height: 100%;
+	min-height: 100%;
 	margin-left: auto;
 	margin-right: auto;
 	box-shadow: 0px 0px 4px #000;
+	overflow: auto;
 }
 
 #logo {
