@@ -9,10 +9,10 @@ public class SpiderThread {
 	int numOfPages = 0;
 	Queue<String> links = new LinkedList<String>();
 	
-	public SpiderThread(int maxThreads, String start) {
+	public SpiderThread(int maxThreads, String start, int amt) {
 		this.maxThreads = maxThreads;
 		startingPoint = start;
-		limit = 7;
+		limit = amt;
 		startThreads();
 
 	}

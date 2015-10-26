@@ -51,17 +51,17 @@ public class Spider extends Thread{
 		
 		PageParser page = new PageParser(url);
 		
-		if(!page.isEmpty){
-		
-			// int pageID = DatabaseManager.addLocation(page.url, page.title,
-			// page.preview, page.text);
-			//
-			// if(pageID != -1)
-			// DatabaseManager.addData(page.getData(), pageID);
+		if (!page.isEmpty) {
+
+			int pageID = DatabaseManager.addLocation(page.url, page.title,
+					page.preview, page.text);
+
+			if (pageID != -1)
+				DatabaseManager.addData(page.getData(), pageID);
 
 			for (String u : page.getLinks())
-				// if(DatabaseManager.getLocation(u) == -1)
-				links.add(u);
+				if (DatabaseManager.getLocation(u) == -1)
+					links.add(u);
 		}
 		
 		if(links.isEmpty())
