@@ -12,6 +12,7 @@ public class DatabaseManager {
 	private static final String url = "jdbc:mysql://127.0.0.1:3306/webSearchEngine";
 	private static final String user = "crawl";
 	private static final String pass = "webCrawl!";
+	private static ArrayList<String> visited = new ArrayList<String>();
 	
 	/**
 	 * sets up the driver and readies the functions needed
@@ -192,6 +193,14 @@ public class DatabaseManager {
 			}
 		}
 		
+	}
+	
+	public static void visit(String u){
+		visited.add(u);
+	}
+	
+	public static boolean visited(String u){
+		return visited.contains(u);
 	}
 	
 	public static void printLocationDatabase(){

@@ -79,6 +79,8 @@ public class PageParser {
 		text = text.replaceAll("\\.", "");
 		text = text.replaceAll("\\:", "");
 		text = text.replaceAll(",", "");
+		text = text.replaceAll("&nbsp", "");
+		text = text.replaceAll(";", "");
 		
 		String[] keywords = getKeywords(src);
 		if(keywords != null)
@@ -86,8 +88,9 @@ public class PageParser {
 				addData(keywords[i], 100);
 		
 		String[] titleWords = title.split(" ");
-		for(int i = 0 ; i < titleWords.length ; i++)
+		for(int i = 0 ; i < titleWords.length ; i++){
 			addData(titleWords[i], 80);
+		}
 
 		String[] words = text.split(" ");
 		for(int w = 0 ; w < words.length ; w++)
@@ -214,7 +217,7 @@ public class PageParser {
 		while (true) {
 			
 			if(code.contains("</p>"))
-				text += clearTags(code.substring(0,code.indexOf("</p>")));
+				text += " " + clearTags(code.substring(0,code.indexOf("</p>")));
 
 			index = code.indexOf("<p>");
 			
@@ -242,7 +245,7 @@ public class PageParser {
 		}
 		else{
 			d = dataNodes.get(dataNodes.indexOf(d));
-			d.weight += 10;
+			d.weight += 5;
 			for(int i = 0 ; i < lowWeight.length ; i ++)
 				if(lowWeight[i].equals(in))
 					d.weight /= 4;

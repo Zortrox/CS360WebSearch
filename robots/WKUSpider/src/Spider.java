@@ -63,10 +63,12 @@ public class Spider extends Thread{
 
 			if (pageID != -1)
 				DatabaseManager.addData(page.getData(), pageID);
+			
+			DatabaseManager.visit(page.url);
 
 			// fix this-------------------------------------------------------------------------------------------
 			for (String u : page.getLinks())
-				if (DatabaseManager.getLocation(u) == -1)
+				if (!DatabaseManager.visited(u))
 					links.add(u);
 		}
 		
