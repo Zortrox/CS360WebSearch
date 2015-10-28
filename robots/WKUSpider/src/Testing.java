@@ -42,6 +42,13 @@ public class Testing {
 			return;
 		}
 		
+		if (args[0].equals("-getLocation")) {
+			
+			DatabaseManager.Exit();
+			
+			return;
+		}
+		
 		int numOfThreads = 10;
 		int amt = 0;
 		String startingPoint = "https://www.wku.edu/";

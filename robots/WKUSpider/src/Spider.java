@@ -31,6 +31,12 @@ public class Spider extends Thread{
 		if(!links.isEmpty()){
 			System.out.println("Thread " + (id == -1 ? "Initial" : id) + " is starting");
 			run(links.remove());
+			try {
+				Thread.sleep(4000);
+				if(!links.isEmpty()) run(links.remove());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			System.out.println("Thread " + (id == -1 ? "Initial" : id) + " is finished");
 		} else{
 			System.out.println("Thread " + (id == -1 ? "Initial" : id) + " found no links!");
@@ -53,12 +59,12 @@ public class Spider extends Thread{
 		
 		if (!page.isEmpty) {
 
-			int pageID = DatabaseManager.addLocation(page.url, page.title,
-					page.preview, page.text);
+			int pageID = DatabaseManager.addLocation(page.url, page.title, page.preview, page.text);
 
 			if (pageID != -1)
 				DatabaseManager.addData(page.getData(), pageID);
 
+			// fix this-------------------------------------------------------------------------------------------
 			for (String u : page.getLinks())
 				if (DatabaseManager.getLocation(u) == -1)
 					links.add(u);

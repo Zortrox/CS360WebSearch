@@ -87,7 +87,7 @@ public class PageParser {
 		
 		String[] titleWords = title.split(" ");
 		for(int i = 0 ; i < titleWords.length ; i++)
-			addData(titleWords[i], 70);
+			addData(titleWords[i], 80);
 
 		String[] words = text.split(" ");
 		for(int w = 0 ; w < words.length ; w++)

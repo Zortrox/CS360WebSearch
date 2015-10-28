@@ -9,8 +9,6 @@ import java.util.ArrayList;
 public class DatabaseManager {
 
 	static Connection connection;
-	static PreparedStatement pst;
-	static ResultSet rs;
 	private static final String url = "jdbc:mysql://127.0.0.1:3306/webSearchEngine";
 	private static final String user = "crawl";
 	private static final String pass = "webCrawl!";
@@ -43,26 +41,23 @@ public class DatabaseManager {
 		}
 	}
 	
-	
-	/**
-	 * Checks if the database already has this location stored
-	 * @param url - the URL to check
-	 * @return the locaion of the URL
-	 */
 	public static int getLocation(String url){
 		try {
-			pst = connection.prepareStatement("SELECT * FROM locations");
-	        rs = pst.executeQuery();
+			PreparedStatement pst = connection.prepareStatement("SELECT webId FROM locations WHERE url = \""+url+"\"");
+	        ResultSet rs = pst.executeQuery();
 	        
-	        while (rs.next()) {
-	        	if(rs.getString(4).equals(url))
-	        		return rs.getInt(1);
-	        }
+	        int index = -1;
 	        
+	        while(rs.next())
+	        	index = rs.getInt(1);
+	        
+	        return index;
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return -1;
+
+        return -1;
 	}
 	
 	//(webId, name, description, url, hash)
@@ -71,39 +66,44 @@ public class DatabaseManager {
 	 * @param url - the URL of the page
 	 * @param name - the Title of the page
 	 * @param description - A description of the page
-	 * @param hash - a has of the page
+	 * @param fulltext - all the text on the page
 	 * @return the index of the location
 	 */
 	public static int addLocation(String url, String name, String description, String fulltext){
 		try {
-			
-			pst = connection.prepareStatement("SELECT * FROM locations");
-	        rs = pst.executeQuery();
+
+			PreparedStatement pst = connection.prepareStatement("SELECT webId FROM locations WHERE url = \""+url+"\"");
+	        ResultSet rs = pst.executeQuery();
 	        
-	        while (rs.next()) 
-	        	if(rs.getString(4).equals(url)){
-	        		pst = connection.prepareStatement("UPDATE locations SET description = ? WHERE webId = ?");
-	        		pst.setString(1, description);
-	        		pst.setInt(2, rs.getInt(1));
-	        		pst.execute();
-	        		return rs.getInt(1);
-	        	}
-			
-			pst = connection.prepareStatement("INSERT INTO locations (name, description, url, siteFullText)"
-					+ " values (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-			
-			pst.setString(1, name);
-			pst.setString(2, description);
-			pst.setString(3, url);
-			pst.setString(4, fulltext);
-			
-			pst.executeUpdate();
-			
-			ResultSet rs = pst.getGeneratedKeys();
-			rs.next();
-			
-			return rs.getInt(1);
-			
+	        int index = -1;
+	        
+	        while(rs.next())
+	        	index = rs.getInt(1);
+	        
+			if (index != -1) {
+				pst = connection.prepareStatement("UPDATE locations SET siteFullText = ?, description = ? WHERE webId = ?");
+				pst.setString(1, fulltext);
+				pst.setString(2, description);
+				pst.setInt(3, index);
+				pst.execute();
+				return index;
+			} else {
+
+				PreparedStatement pst2 = connection.prepareStatement("INSERT INTO locations (name, description, url, siteFullText)"
+								+ " values (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+
+				pst2.setString(1, name);
+				pst2.setString(2, description);
+				pst2.setString(3, url);
+				pst2.setString(4, fulltext);
+
+				pst2.executeUpdate();
+
+				ResultSet rs2 = pst2.getGeneratedKeys();
+				rs2.next();
+
+				return rs2.getInt(1);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -113,26 +113,36 @@ public class DatabaseManager {
 	
 	public static int addKeyword(String keyword){
 		try {
-			pst = connection.prepareStatement("SELECT * FROM keywords");
-	        rs = pst.executeQuery();
+			PreparedStatement pst = connection.prepareStatement("SELECT keyId FROM keywords WHERE word = \""+keyword+"\"");
+	        ResultSet rs = pst.executeQuery();
 	        
-	        while (rs.next()) 
-	        	if(rs.getString(2).equals(keyword.toLowerCase()))
-	        		return rs.getInt(1);
+	        int index = -1;
 	        
-	        if(keyword.length() >= 15){
-	        	System.out.println(keyword + " too long for keyword column");
-	        	return -1;
-	        }
+	        while(rs.next())
+	        	index = rs.getInt(1);
 	        
-			pst = connection.prepareStatement("INSERT INTO keywords (word) "+ "values (?)", Statement.RETURN_GENERATED_KEYS);
-			pst.setString(1,keyword.toLowerCase());
-			pst.executeUpdate();
-			
-			ResultSet rs = pst.getGeneratedKeys();
-			rs.next();
-			
-			return rs.getInt(1);
+	        if(index != -1)
+	        	return index;
+	        else
+	        {
+				if (keyword.length() >= 15) {
+					System.out.println(keyword + " too long for keyword column");
+					return -1;
+				}
+
+				pst = connection.prepareStatement("INSERT INTO keywords (word) " + "values (?)",Statement.RETURN_GENERATED_KEYS);
+				pst.setString(1, keyword.toLowerCase());
+				pst.executeUpdate();
+
+				ResultSet rs2 = pst.getGeneratedKeys();
+				
+				int ni = -1;
+				
+		        while(rs2.next())
+		        	ni = rs2.getInt(1);
+
+				return ni;
+			}
 	        
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -140,7 +150,11 @@ public class DatabaseManager {
 		return -1;
 	}
 	
-	
+	/**
+	 * Adds a Data object to the database for a page.
+	 * @param data - An array list of Data objects
+	 * @param pageID - The id of the page index. This is returned from the addLocation() function
+	 */
 	public static void addData(ArrayList<Data> data, int pageID){
 		
 		loop:
@@ -153,25 +167,26 @@ public class DatabaseManager {
 			
 			try {		      
 				
-				pst = connection.prepareStatement("SELECT * FROM siteKeywords");
-		        rs = pst.executeQuery();
+				PreparedStatement pst = connection.prepareStatement("SELECT * FROM siteKeywords WHERE webID = " + pageID + " AND keyId = " + keyID);
+		        ResultSet rs = pst.executeQuery();
 		        
 		        while (rs.next()) 
-		        	if(rs.getInt(1) == pageID && rs.getInt(2) == keyID){
-		        		pst = connection.prepareStatement("UPDATE siteKeywords SET weight = ? WHERE webId = ? AND keyID = ?");
-		        		pst.setInt(1, d.weight);
-		        		pst.setInt(2, pageID);
-		        		pst.setInt(3, keyID);
-		        		pst.execute();
-		        		continue loop;
-		        	}
+		        {
+					pst = connection
+							.prepareStatement("UPDATE siteKeywords SET weight = ? WHERE webId = ? AND keyId = ?");
+					pst.setInt(1, d.weight);
+					pst.setInt(2, pageID);
+					pst.setInt(3, keyID);
+					pst.execute();
+					continue loop;
+				}
 				
-				pst = connection.prepareStatement("INSERT INTO siteKeywords (webId, keyId, weight)"
+		        PreparedStatement pst2 = connection.prepareStatement("INSERT INTO siteKeywords (webId, keyId, weight)"
 						+ " values (?, ?, ?)");
-				pst.setInt(1,pageID);
-				pst.setInt(2,keyID);
-				pst.setInt(3, d.weight);
-				pst.execute();
+				pst2.setInt(1,pageID);
+				pst2.setInt(2,keyID);
+				pst2.setInt(3, d.weight);
+				pst2.execute();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -179,22 +194,10 @@ public class DatabaseManager {
 		
 	}
 	
-	public static void clearDataForPage(String url){
-		
-		
-		
-	}
-	
-	
-	public static void clearData(){
-		
-	}
-	
-	
 	public static void printLocationDatabase(){
 		try {
-			pst = connection.prepareStatement("SELECT * FROM locations");
-			rs = pst.executeQuery();
+			PreparedStatement pst = connection.prepareStatement("SELECT * FROM locations");
+			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
 				System.out.println();
@@ -212,8 +215,8 @@ public class DatabaseManager {
 	
 	public static void printKeywordDatabase(){
 		try {
-			pst = connection.prepareStatement("SELECT * FROM keywords");
-			rs = pst.executeQuery();
+			PreparedStatement pst = connection.prepareStatement("SELECT * FROM keywords");
+			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
 				System.out.println();
@@ -228,8 +231,8 @@ public class DatabaseManager {
 	
 	public static void printDataDatabase(){
 		try {
-			pst = connection.prepareStatement("SELECT * FROM siteKeywords");
-			rs = pst.executeQuery();
+			PreparedStatement pst = connection.prepareStatement("SELECT * FROM siteKeywords");
+			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
 				System.out.println();
