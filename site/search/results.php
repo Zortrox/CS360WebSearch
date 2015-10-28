@@ -102,6 +102,7 @@ else {
 
 	while ($website = $websiteRows->fetch_assoc()) {
 		$title = $website['name'];
+		if ($title == "") $title = $website['url'];
 		$desc = $website['description'];
 		$url = $website['url'];
 
