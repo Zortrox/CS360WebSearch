@@ -49,8 +49,8 @@ function createConstruct($wordArray, $column, $useKey = false) {
 
 //remove all string searches and put them into an array
 $stringSearch = array();
-preg_match_all("/([\"\'])(?:(?=(\\?))\2.)*?\1/", $query, $stringSearch);
-$query = preg_replace("/([\"\'])(?:(?=(\\?))\2.)*?\1/", "", $query);
+preg_match_all("/([\"'])(?:(?=(\\?))\2.)*?\1/", $query, $stringSearch);
+$query = preg_replace("/([\"'])(?:(?=(\\?))\2.)*?\1/", "", $query);
 echo $query;
 
 //create array based on user-inputted words
