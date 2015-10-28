@@ -47,6 +47,13 @@ function createConstruct($wordArray, $column, $useKey = false) {
 	return $construct;
 }
 
+//remove all string searches and put them into an array
+$stringSearch = array();
+preg_match_all("/(["'])(?:(?=(\\?))\2.)*?\1/", $query, $stringSearch);
+$query = preg_replace("/(["'])(?:(?=(\\?))\2.)*?\1/", "", $query);
+echo $query;
+//"//stop the formatting look in sublime text
+
 //create array based on user-inputted words
 //get all keyword rows from database based on user-inputted words
 //$query variable is the user's search
