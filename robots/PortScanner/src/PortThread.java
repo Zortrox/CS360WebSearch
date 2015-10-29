@@ -20,7 +20,7 @@ public class PortThread implements Runnable{
 			portNum = 443;
 			break;
 		}
-		address += portNum;
+		address += ":" + portNum;
 		
 		s = inSem;
 		

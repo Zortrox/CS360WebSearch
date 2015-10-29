@@ -34,7 +34,6 @@ public class DatabaseManager {
 	
 	public static void Exit(){
 		try {
-			System.out.println("Connection closed");
 			connection.close();
 			System.out.println("Connection closed");
 		} catch (SQLException e) {
