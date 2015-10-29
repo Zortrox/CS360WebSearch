@@ -23,7 +23,7 @@ public class Scanner {
     		for (int j=0; j<256; j++) {
     			for (int p=0; p<2; p++) {
 	    			s.acquire();
-	    			drawProgressBar(++numIPScanned, maxIPs);
+	    			drawProgressBar(++numIPScanned, maxIPs, startTime);
 	    			Runnable r = new PortThread(i, j, p, s, newIPs, updatedIPs, removedIPs);
 	    			if (numIPScanned >= maxIPs - maxThreads){
 	    				threads[numIPScanned - (maxIPs - maxThreads) - 1] = new Thread(r);
@@ -59,7 +59,7 @@ public class Scanner {
     }
     
     //maybe put in an async function to count seconds
-    public static void drawProgressBar(int current, int max) {
+    public static void drawProgressBar(int current, int max, long startTime) {
     	char numOfChars = 30;
     	double percent = current*1.0/max;
     	
@@ -77,6 +77,13 @@ public class Scanner {
     		}
     	}
     	
-    	System.out.print("   [" + bar + "] " + Math.floor(percent*1000)/10.0 + "% completed.\r");
+    	long totalTime = (System.nanoTime() - startTime);
+    	long timeHours = TimeUnit.NANOSECONDS.toHours(totalTime);
+    	long timeMinutes = TimeUnit.NANOSECONDS.toMinutes(totalTime) - timeHours * 60;
+    	long timeSeconds = TimeUnit.NANOSECONDS.toSeconds(totalTime) - timeHours * 360 - timeMinutes * 60;
+    	String timeDisplay = String.format("%02d", timeHours) + ":" + String.format("%02d", timeMinutes)
+    		+ ":" + String.format("%02d", timeSeconds);
+    	
+    	System.out.print("   [" + bar + "] " + Math.floor(percent*1000)/10.0 + "% completed in " + timeDisplay + ".\r");
     }
 }
