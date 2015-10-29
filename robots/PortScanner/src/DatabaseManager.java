@@ -48,8 +48,8 @@ public class DatabaseManager {
 	        rs = pst.executeQuery();
 	        
 	        while (rs.next()) {
-	        	if(rs.getString(1).equals(ipAddress)){
-	        		pst = connection.prepareStatement("UPDATE locations SET inUse = ? WHERE IP = ?");
+	        	if(rs.getString(1).equals(ipAddress) && rs.getBoolean(2) != inUse){
+	        		pst = connection.prepareStatement("UPDATE webServers SET inUse=? WHERE IP=?");
 	        		pst.setBoolean(1, inUse);
 	        		pst.setString(2, ipAddress);
 	        		pst.execute();
@@ -77,13 +77,13 @@ public class DatabaseManager {
 	
 	public static int removeIP(String ipAddress) {
 		try {
-			pst = connection.prepareStatement("SELECT * FROM webServers WHERE IP = ?");
+			pst = connection.prepareStatement("SELECT * FROM webServers WHERE IP=?");
 			pst.setString(1, ipAddress);
 	        rs = pst.executeQuery();
 	        
 	        while (rs.next()) {
 	        	if(rs.getString(1).equals(ipAddress)){
-	        		pst = connection.prepareStatement("DELETE FROM webServers WHERE IP = ?");
+	        		pst = connection.prepareStatement("DELETE FROM webServers WHERE IP=?");
 	        		pst.setString(1, ipAddress);
 	        		pst.execute();
 	        		System.out.println("Server no longer listening. - " + ipAddress);
