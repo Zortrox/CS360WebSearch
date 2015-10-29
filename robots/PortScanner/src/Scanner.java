@@ -19,7 +19,7 @@ public class Scanner {
     	DatabaseManager.Initialize();
     	
     	Thread[] threads = new Thread[maxThreads];
-    	for (int i=150; i<256; i++) {
+    	for (int i=0; i<256; i++) {
     		for (int j=0; j<256; j++) {
     			for (int p=0; p<2; p++) {
 	    			s.acquire();
