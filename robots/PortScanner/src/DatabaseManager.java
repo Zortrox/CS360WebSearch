@@ -44,7 +44,7 @@ public class DatabaseManager {
 	
 	public static int addIP(String ipAddress, boolean inUse) {
 		try {
-			pst = connection.prepareStatement("SELECT * FROM webServer");
+			pst = connection.prepareStatement("SELECT * FROM webServers");
 	        rs = pst.executeQuery();
 	        
 	        while (rs.next()) {
@@ -53,19 +53,19 @@ public class DatabaseManager {
 	        		pst.setBoolean(1, inUse);
 	        		pst.setString(2, ipAddress);
 	        		pst.execute();
-	        		System.out.println("Updating current listening server.");
+	        		System.out.println("Updating current listening server. - " + ipAddress);
 	        		return 1;
 	        	}
 	        }
 			
-			pst = connection.prepareStatement("INSERT INTO webServer (IP, inUse)"
+			pst = connection.prepareStatement("INSERT INTO webServers (IP, inUse)"
 					+ " VALUES (?, ?)");
 			
 			pst.setString(1, ipAddress);
 			pst.setBoolean(2, inUse);
 			
 			pst.executeUpdate();
-			System.out.println("New listening server found!");
+			System.out.println("New listening server found! - " + ipAddress);
 			return 0;
 			
 		} catch (SQLException e) {
