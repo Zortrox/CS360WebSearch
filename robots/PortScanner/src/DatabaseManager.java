@@ -48,11 +48,12 @@ public class DatabaseManager {
 	        rs = pst.executeQuery();
 	        
 	        while (rs.next()) {
-	        	if(rs.getString(0).equals(ipAddress)){
+	        	if(rs.getString(1).equals(ipAddress)){
 	        		pst = connection.prepareStatement("UPDATE locations SET inUse = ? WHERE IP = ?");
 	        		pst.setBoolean(1, inUse);
 	        		pst.setString(2, ipAddress);
 	        		pst.execute();
+	        		System.out.println("Updating current listening server.");
 	        		return 1;
 	        	}
 	        }
@@ -64,7 +65,7 @@ public class DatabaseManager {
 			pst.setBoolean(2, inUse);
 			
 			pst.executeUpdate();
-			
+			System.out.println("New listening server found!");
 			return 0;
 			
 		} catch (SQLException e) {
@@ -75,6 +76,8 @@ public class DatabaseManager {
 	}
 	
 	public static int removeIP(String ipAddress) {
+		
+		//System.out.println("No listening server found.");
 		
 		return 0;
 	}
