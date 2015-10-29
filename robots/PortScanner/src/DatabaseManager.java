@@ -27,7 +27,7 @@ public class DatabaseManager {
 			return true;
 			
 		} catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -37,7 +37,7 @@ public class DatabaseManager {
 			connection.close();
 			System.out.println("Connection closed");
 		} catch (SQLException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class DatabaseManager {
 			return 0;
 			
 		} catch (SQLException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		return -1;
@@ -91,7 +91,7 @@ public class DatabaseManager {
 	        	}
 	        }
 		} catch (SQLException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		//System.out.println("No listening server found.");
