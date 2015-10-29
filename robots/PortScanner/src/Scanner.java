@@ -77,6 +77,6 @@ public class Scanner {
     		}
     	}
     	
-    	System.out.print("   [" + bar + "] " + (int) Math.floor(percent*100) + "% completed.\r");
+    	System.out.print("   [" + bar + "] " + Math.floor(percent*1000)/10.0 + "% completed.\r");
     }
 }
