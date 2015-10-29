@@ -27,7 +27,7 @@ public class DatabaseManager {
 			return true;
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return false;
 	}
@@ -37,7 +37,7 @@ public class DatabaseManager {
 			connection.close();
 			System.out.println("Connection closed");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
@@ -53,7 +53,7 @@ public class DatabaseManager {
 	        		pst.setBoolean(1, inUse);
 	        		pst.setString(2, ipAddress);
 	        		pst.execute();
-	        		System.out.println("Updating current listening server. - " + ipAddress);
+	        		//System.out.println("Updating current listening server. - " + ipAddress);
 	        		return 1;
 	        	}
 	        }
@@ -65,11 +65,11 @@ public class DatabaseManager {
 			pst.setBoolean(2, inUse);
 			
 			pst.executeUpdate();
-			System.out.println("New listening server found! - " + ipAddress);
+			//System.out.println("New listening server found! - " + ipAddress);
 			return 0;
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		return -1;

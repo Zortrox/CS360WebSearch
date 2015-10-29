@@ -6,6 +6,7 @@ public class Scanner {
     	long startTime = System.nanoTime();
     	Semaphore s = new Semaphore(255);
     	int numIPScanned = 0;
+    	final int maxIPs = 65535*2; //131070
     	
     	DatabaseManager.Initialize();
     	
@@ -13,12 +14,15 @@ public class Scanner {
     		for (int j=0; j<256; j++) {
     			for (int p=0; p<2; p++) {
 	    			s.acquire();
-	    			if (++numIPScanned % 100 == 0) System.out.println(numIPScanned + " IP Addresses & ports scanned.");
+	    			drawProgressBar(++numIPScanned, maxIPs);
 	    			Runnable r = new PortThread(i, j, p, s);
 	    			new Thread(r).start();
     			}
     		}
     	}
+    	
+    	//newline for progress bar
+    	System.out.println("");
     	
     	long totalTime = (System.nanoTime() - startTime);
     	
@@ -26,10 +30,32 @@ public class Scanner {
     	
     	DatabaseManager.Exit();
     	
-    	System.out.println("DONE -- ");
-    	System.out.println("65535 IP addresses parsed in "
+    	System.out.println("\nDONE -- ");
+    	System.out.println("65535 IP addresses w/ 2 ports parsed in "
     			+ "" + TimeUnit.NANOSECONDS.toHours(totalTime) + " hours "
 				+ "" + TimeUnit.NANOSECONDS.toMinutes(totalTime) + " minutes "
 				+ "" + TimeUnit.NANOSECONDS.toSeconds(totalTime) + " seconds.");
+    }
+    
+    //maybe put in an async function to count seconds
+    public static void drawProgressBar(int current, int max) {
+    	char numOfChars = 30;
+    	double percent = current*1.0/max;
+    	
+    	String bar = "";
+    	boolean inProgress = true;
+    	for (int i=0; i<numOfChars; i++){
+    		if (i < Math.floor(percent*numOfChars)) bar += "=";
+    		else {
+    			if (inProgress) {
+    				bar += ">";
+    				inProgress = false;
+    			} else {
+    				bar += " ";
+    			}
+    		}
+    	}
+    	
+    	System.out.print("[" + bar + "] " + (int) Math.floor(percent*100) + "% completed.\r");
     }
 }
