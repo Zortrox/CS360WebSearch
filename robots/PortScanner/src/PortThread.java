@@ -4,31 +4,36 @@ import java.util.concurrent.Semaphore;
 public class PortThread implements Runnable{
 	private Thread t;
 	private String address;
+	private int portNum;
 	Semaphore s;
 	
-	PortThread(int firstBlock, int secondBlock, Semaphore inSem) throws InterruptedException {
+	PortThread(int firstBlock, int secondBlock, int port, Semaphore inSem) throws InterruptedException {
 		address = "161.6." + firstBlock + "." + secondBlock;
+		
+		switch(port){
+		case 0:
+			portNum = 80;
+			break;
+		case 1:
+			portNum = 443;
+			break;
+		}
+		
 		s = inSem;
 		if (secondBlock % 255 == 0) System.out.println("## - " +  address );
 	}
 	
 	@Override
 	public void run() {
-		boolean normPort = serverListening(address, 80);
-		boolean httpsPort = false;//serverListening(address, 443);
+		boolean listening = serverListening(address, portNum);
 		
-		if (normPort || httpsPort) {
-			String port = "";
-		
-			//write each address and port to console
-			if (normPort) {
-				port = ":80";
-				System.out.println(address + port);
-			}
-			if (httpsPort) {
-				port = ":443";
-				System.out.println(address + port);
-			}
+		if (listening) {
+			//download website data
+			//parse to determine what kind of site
+			//add to database
+			DatabaseManager.addIP(address + ":" + portNum, true);
+		} else {
+			DatabaseManager.removeIP(address + ":" + portNum);
 		}
 		
 		s.release();
