@@ -18,6 +18,7 @@ public class PortThread implements Runnable{
 			portNum = 443;
 			break;
 		}
+		address += portNum;
 		
 		s = inSem;
 	}
