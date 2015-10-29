@@ -53,7 +53,7 @@ public class DatabaseManager {
 	        		pst.setBoolean(1, inUse);
 	        		pst.setString(2, ipAddress);
 	        		pst.execute();
-	        		System.out.println("Updating current listening server.");
+	        		System.out.println("Updating current listening server. - " + ipAddress);
 	        		return 1;
 	        	}
 	        }
@@ -65,7 +65,7 @@ public class DatabaseManager {
 			pst.setBoolean(2, inUse);
 			
 			pst.executeUpdate();
-			System.out.println("New listening server found!");
+			System.out.println("New listening server found! - " + ipAddress);
 			return 0;
 			
 		} catch (SQLException e) {
