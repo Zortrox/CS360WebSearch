@@ -44,7 +44,7 @@ public class DatabaseManager {
 	
 	public static int addIP(String ipAddress, boolean inUse) {
 		try {
-			pst = connection.prepareStatement("SELECT * FROM webServer");
+			pst = connection.prepareStatement("SELECT * FROM webServers");
 	        rs = pst.executeQuery();
 	        
 	        while (rs.next()) {
@@ -58,7 +58,7 @@ public class DatabaseManager {
 	        	}
 	        }
 			
-			pst = connection.prepareStatement("INSERT INTO webServer (IP, inUse)"
+			pst = connection.prepareStatement("INSERT INTO webServers (IP, inUse)"
 					+ " VALUES (?, ?)");
 			
 			pst.setString(1, ipAddress);
