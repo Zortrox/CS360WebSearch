@@ -43,9 +43,9 @@ public class Scanner {
     	System.out.println("\nDONE -- ");
     	System.out.println("65535 IP addresses w/ 2 ports parsed in "
     			+ timeHours + " hours " + timeMinutes + " minutes " + timeSeconds + " seconds.");
-    	System.out.println(newIPs + " new IP addresses added.");
-    	System.out.println(updatedIPs + " updated IP addresses.");
-    	System.out.println(removedIPs + " IP addresses removed.");
+    	System.out.println(newIPs.get() + " new IP addresses added.");
+    	System.out.println(updatedIPs.get() + " updated IP addresses.");
+    	System.out.println(removedIPs.get() + " IP addresses removed.");
     }
     
     //maybe put in an async function to count seconds
@@ -67,6 +67,6 @@ public class Scanner {
     		}
     	}
     	
-    	System.out.print("[" + bar + "] " + (int) Math.floor(percent*100) + "% completed.\r");
+    	System.out.print("   [" + bar + "] " + (int) Math.floor(percent*100) + "% completed.\r");
     }
 }
