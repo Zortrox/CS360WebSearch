@@ -77,17 +77,16 @@ public class DatabaseManager {
 	
 	public static int removeIP(String ipAddress) {
 		try {
-			String smt = "SELECT * FROM webServers WHERE IP = ?";
-			pst = connection.prepareStatement(smt);
+			pst = connection.prepareStatement("SELECT * FROM webServers WHERE IP = ?");
 			pst.setString(1, ipAddress);
-	        rs = pst.executeQuery(smt);
+	        rs = pst.executeQuery();
 	        
 	        while (rs.next()) {
 	        	if(rs.getString(1).equals(ipAddress)){
 	        		pst = connection.prepareStatement("DELETE FROM webServers WHERE IP = ?");
 	        		pst.setString(1, ipAddress);
 	        		pst.execute();
-	        		//System.out.println("Server no longer listening. - " + ipAddress);
+	        		System.out.println("Server no longer listening. - " + ipAddress);
 	        		return 1;
 	        	}
 	        }
