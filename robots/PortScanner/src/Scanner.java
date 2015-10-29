@@ -5,9 +5,10 @@ public class Scanner {
 
     public static void main(String[] args) throws InterruptedException {
     	long startTime = System.nanoTime();
-    	Semaphore s = new Semaphore(255);
+    	int maxThreads = 256;
+    	Semaphore s = new Semaphore(maxThreads);
     	int numIPScanned = 0;
-    	final int maxIPs = 65535*2; //131070
+    	final int maxIPs = 65536*2; //131072
     	AtomicInteger newIPs = new AtomicInteger(0);
     	AtomicInteger updatedIPs = new AtomicInteger(0);
     	AtomicInteger removedIPs = new AtomicInteger(0);
@@ -17,15 +18,24 @@ public class Scanner {
     	
     	DatabaseManager.Initialize();
     	
-    	for (int i=0; i<256; i++) {
+    	Thread[] threads = new Thread[maxThreads];
+    	for (int i=150; i<256; i++) {
     		for (int j=0; j<256; j++) {
     			for (int p=0; p<2; p++) {
 	    			s.acquire();
 	    			drawProgressBar(++numIPScanned, maxIPs);
 	    			Runnable r = new PortThread(i, j, p, s, newIPs, updatedIPs, removedIPs);
-	    			new Thread(r).start();
+	    			if (numIPScanned >= maxIPs - maxThreads){
+	    				threads[numIPScanned - (maxIPs - maxThreads) - 1] = new Thread(r);
+	    				threads[numIPScanned - (maxIPs - maxThreads) - 1].start();
+	    			}
+	    			else new Thread(r).start();
     			}
     		}
+    	}
+    	
+    	for (Thread thread : threads) {
+    		thread.join();
     	}
     	
     	//newline for progress bar
