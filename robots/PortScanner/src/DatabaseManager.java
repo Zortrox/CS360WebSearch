@@ -76,6 +76,23 @@ public class DatabaseManager {
 	}
 	
 	public static int removeIP(String ipAddress) {
+		try {
+			pst = connection.prepareStatement("SELECT IP FROM webServers WHERE IP = ?");
+			pst.setString(1, ipAddress);
+	        rs = pst.executeQuery();
+	        
+	        while (rs.next()) {
+	        	if(rs.getString(1).equals(ipAddress)){
+	        		pst = connection.prepareStatement("DELETE FROM webServers WHERE IP = ?");
+	        		pst.setString(1, ipAddress);
+	        		pst.execute();
+	        		//System.out.println("Server no longer listening. - " + ipAddress);
+	        		return 1;
+	        	}
+	        }
+		} catch (SQLException e) {
+			//e.printStackTrace();
+		}
 		
 		//System.out.println("No listening server found.");
 		
