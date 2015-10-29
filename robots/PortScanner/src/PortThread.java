@@ -20,7 +20,7 @@ public class PortThread implements Runnable{
 		}
 		
 		s = inSem;
-		if (secondBlock % 255 == 0) System.out.println("## - " +  address );
+		if (secondBlock % 255 == 0) System.out.println("## - " +  address + ":" + portNum);
 	}
 	
 	@Override
