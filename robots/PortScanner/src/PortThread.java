@@ -1,13 +1,15 @@
 import java.net.*;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PortThread implements Runnable{
 	private Thread t;
 	private String address;
 	private int portNum;
 	Semaphore s;
+	AtomicInteger nIP, uIP, rIP;
 	
-	PortThread(int firstBlock, int secondBlock, int port, Semaphore inSem) throws InterruptedException {
+	PortThread(int firstBlock, int secondBlock, int port, Semaphore inSem, AtomicInteger newIPs, AtomicInteger updatedIPs, AtomicInteger removedIPs) throws InterruptedException {
 		address = "161.6." + firstBlock + "." + secondBlock;
 		
 		switch(port){
@@ -21,6 +23,10 @@ public class PortThread implements Runnable{
 		address += portNum;
 		
 		s = inSem;
+		
+		nIP = newIPs;
+		uIP = updatedIPs;
+		rIP = removedIPs;
 	}
 	
 	@Override
@@ -31,9 +37,14 @@ public class PortThread implements Runnable{
 			//download website data
 			//parse to determine what kind of site
 			//add to database
-			DatabaseManager.addIP(address + ":" + portNum, true);
+			int addType = DatabaseManager.addIP(address + ":" + portNum, true);
+			if (addType == 0) {
+				nIP.incrementAndGet();
+			} else if (addType == 1) {
+				uIP.incrementAndGet();
+			}
 		} else {
-			DatabaseManager.removeIP(address + ":" + portNum);
+			rIP.addAndGet(DatabaseManager.removeIP(address + ":" + portNum));
 		}
 		
 		s.release();

@@ -1,4 +1,5 @@
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Scanner {
 
@@ -7,6 +8,12 @@ public class Scanner {
     	Semaphore s = new Semaphore(255);
     	int numIPScanned = 0;
     	final int maxIPs = 65535*2; //131070
+    	AtomicInteger newIPs = new AtomicInteger(0);
+    	AtomicInteger updatedIPs = new AtomicInteger(0);
+    	AtomicInteger removedIPs = new AtomicInteger(0);
+    	
+    	//newline for neatness
+    	System.out.println("");
     	
     	DatabaseManager.Initialize();
     	
@@ -15,7 +22,7 @@ public class Scanner {
     			for (int p=0; p<2; p++) {
 	    			s.acquire();
 	    			drawProgressBar(++numIPScanned, maxIPs);
-	    			Runnable r = new PortThread(i, j, p, s);
+	    			Runnable r = new PortThread(i, j, p, s, newIPs, updatedIPs, removedIPs);
 	    			new Thread(r).start();
     			}
     		}
@@ -25,6 +32,9 @@ public class Scanner {
     	System.out.println("");
     	
     	long totalTime = (System.nanoTime() - startTime);
+    	long timeHours = TimeUnit.NANOSECONDS.toHours(totalTime);
+    	long timeMinutes = TimeUnit.NANOSECONDS.toMinutes(totalTime) - timeHours * 60;
+    	long timeSeconds = TimeUnit.NANOSECONDS.toSeconds(totalTime) - timeHours * 360 - timeMinutes * 60;
     	
     	//get number of actual web servers from database
     	
@@ -32,9 +42,10 @@ public class Scanner {
     	
     	System.out.println("\nDONE -- ");
     	System.out.println("65535 IP addresses w/ 2 ports parsed in "
-    			+ "" + TimeUnit.NANOSECONDS.toHours(totalTime) + " hours "
-				+ "" + TimeUnit.NANOSECONDS.toMinutes(totalTime) + " minutes "
-				+ "" + TimeUnit.NANOSECONDS.toSeconds(totalTime) + " seconds.");
+    			+ timeHours + " hours " + timeMinutes + " minutes " + timeSeconds + " seconds.");
+    	System.out.println(newIPs + " new IP addresses added.");
+    	System.out.println(updatedIPs + " updated IP addresses.");
+    	System.out.println(removedIPs + " IP addresses removed.");
     }
     
     //maybe put in an async function to count seconds
