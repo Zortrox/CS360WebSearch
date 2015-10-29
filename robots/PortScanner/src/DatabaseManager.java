@@ -77,9 +77,10 @@ public class DatabaseManager {
 	
 	public static int removeIP(String ipAddress) {
 		try {
-			pst = connection.prepareStatement("SELECT * FROM webServers WHERE IP = ?");
+			String smt = "SELECT * FROM webServers WHERE IP = ?";
+			pst = connection.prepareStatement(smt);
 			pst.setString(1, ipAddress);
-	        rs = pst.executeQuery("SELECT * FROM webServers WHERE IP = ?");
+	        rs = pst.executeQuery(smt);
 	        
 	        while (rs.next()) {
 	        	if(rs.getString(1).equals(ipAddress)){
