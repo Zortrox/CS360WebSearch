@@ -20,7 +20,6 @@ public class PortThread implements Runnable{
 			portNum = 443;
 			break;
 		}
-		address += ":" + portNum;
 		
 		s = inSem;
 		
@@ -54,7 +53,7 @@ public class PortThread implements Runnable{
 	{
 		if (t == null)
 		{
-			t = new Thread (this, address);
+			t = new Thread (this, address + ":" + portNum);
 			t.start ();
 		}
 	}
