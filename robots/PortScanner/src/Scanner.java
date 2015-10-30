@@ -44,7 +44,7 @@ public class Scanner {
     	long totalTime = (System.nanoTime() - startTime);
     	long timeHours = TimeUnit.NANOSECONDS.toHours(totalTime);
     	long timeMinutes = TimeUnit.NANOSECONDS.toMinutes(totalTime) - timeHours * 60;
-    	long timeSeconds = TimeUnit.NANOSECONDS.toSeconds(totalTime) - timeHours * 360 - timeMinutes * 60;
+    	long timeSeconds = TimeUnit.NANOSECONDS.toSeconds(totalTime) - timeHours * 3600 - timeMinutes * 60;
     	
     	//get number of actual web servers from database
     	
@@ -80,7 +80,7 @@ public class Scanner {
     	long totalTime = (System.nanoTime() - startTime);
     	long timeHours = TimeUnit.NANOSECONDS.toHours(totalTime);
     	long timeMinutes = TimeUnit.NANOSECONDS.toMinutes(totalTime) - timeHours * 60;
-    	long timeSeconds = TimeUnit.NANOSECONDS.toSeconds(totalTime) - timeHours * 360 - timeMinutes * 60;
+    	long timeSeconds = TimeUnit.NANOSECONDS.toSeconds(totalTime) - timeHours * 3600 - timeMinutes * 60;
     	String timeDisplay = String.format("%02d", timeHours) + ":" + String.format("%02d", timeMinutes)
     		+ ":" + String.format("%02d", timeSeconds);
     	
