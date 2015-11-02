@@ -4,7 +4,7 @@
 $startTime = microtime(true);
 $endTime = null;
 
-//setup user and connect
+//setup user and connect to database
 $user = "web";
 $pass = "webSearch!";
 $database = "webSearchEngine";
