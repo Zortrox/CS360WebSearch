@@ -12,7 +12,7 @@
 <div id="wrapper">
 	<div id="results-top-bar">
 		<form id="form-results">
-			<input id="input-query" type="text" name="q" value="<?php echo $query ?>">
+			<input id="input-query" type="text" name="q" value="<?php echo htmlspecialchars($query); ?>">
 			<input id="input-search" type="submit" value="Search">
 		</form>
 		<a id="home-button" href="/"><div>Home</div></a>

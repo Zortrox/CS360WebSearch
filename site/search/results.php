@@ -4,7 +4,7 @@
 $startTime = microtime(true);
 $endTime = null;
 
-//setup user and connect
+//setup user and connect to database
 $user = "web";
 $pass = "webSearch!";
 $database = "webSearchEngine";
@@ -46,6 +46,11 @@ function createConstruct($wordArray, $column, $useKey = false) {
 
 	return $construct;
 }
+
+//remove all string searches and put them into an array
+$stringSearch = array();
+preg_match_all("/([\"'])(?:(?=(\\\?))\\2.)*\\1/", $query, $stringSearch);
+$query = preg_replace("/([\"'])(?:(?=(\\\?))\\2.)*?\\1/", "", $query);
 
 //create array based on user-inputted words
 //get all keyword rows from database based on user-inputted words
@@ -96,6 +101,7 @@ else {
 
 	while ($website = $websiteRows->fetch_assoc()) {
 		$title = $website['name'];
+		if ($title == "") $title = $website['url'];
 		$desc = $website['description'];
 		$url = $website['url'];
 
