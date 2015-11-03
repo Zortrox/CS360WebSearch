@@ -62,10 +62,11 @@ $keysFound = $keywordRows->num_rows;
 
 if ($querySplit[0] == "")
 	echo "You must input a query.";
-else if ($keysFound == 0)
+else if ($keysFound == 0) {
 	$endTime = microtime(true);
 	$totalTime = round($endTime - $startTime, 3);
 	echo "Sorry, there are no matching result for <b> $query </b>. Time taken: $totalTime seconds.";
+	}
 else {
 	//get all keyIds of the user-inputted keywords
 	$keyArray = array();
