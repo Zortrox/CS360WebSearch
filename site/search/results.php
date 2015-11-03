@@ -60,9 +60,13 @@ $keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "
 $keywordRows = $mysqli->query($keywordQuery);
 $keysFound = $keywordRows->num_rows;
 
-if ($querySplit[0] == "")
-	echo "You must input a query.";
-else if ($keysFound == 0) {
+if ($querySplit[0] == "") { //if no query tell user 
+	$endTime = microtime(true);
+	$totalTime = round($endTime - $startTime, 3);
+	echo "You must input a query. Time taken: $totalTime seconds."; 
+}
+	
+else if ($keysFound == 0) { //if query returns no results, inform user 
 	$endTime = microtime(true);
 	$totalTime = round($endTime - $startTime, 3);
 	echo "Sorry, there are no matching result for <b> $query </b>. Time taken: $totalTime seconds.";
