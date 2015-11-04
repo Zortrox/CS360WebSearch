@@ -62,7 +62,7 @@ $keysFound = $keywordRows->num_rows;
 
 if ($querySplit[0] == "")
 	echo "You must input a query.";
-else if ($keysFound == 0)
+else if ($keysFound == 0) 
 	echo "Sorry, there are no matching result for <b> $query </b>.";
 else {
 	//get all keyIds of the user-inputted keywords
