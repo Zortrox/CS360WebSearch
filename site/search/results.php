@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ERROR | E_PARSE);
+
 //timing setup
 $startTime = microtime(true);
 $endTime = null;
@@ -60,6 +62,7 @@ $keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "
 $keywordRows = $mysqli->query($keywordQuery);
 $keysFound = $keywordRows->num_rows;
 
+<<<<<<< HEAD
 if ($querySplit[0] == "") { //if no query tell user 
 	$endTime = microtime(true);
 	$totalTime = round($endTime - $startTime, 3);
@@ -71,6 +74,12 @@ else if ($keysFound == 0) { //if query returns no results, inform user
 	$totalTime = round($endTime - $startTime, 3);
 	echo "Sorry, there are no matching result for <b> $query </b>. Time taken: $totalTime seconds.";
 	}
+=======
+if ($querySplit[0] == "")
+	echo "You must input a query.";
+else if ($keysFound == 0) 
+	echo "Sorry, there are no matching result for <b> $query </b>.";
+>>>>>>> 1f5a8bb4cbf3472d0c9e413732808c576c6f98e5
 else {
 	//get all keyIds of the user-inputted keywords
 	$keyArray = array();
@@ -106,11 +115,13 @@ else {
 	$totalTime = round($endTime - $startTime, 3);
 	echo "$totalTime seconds</p>";
 
-	while ($website = $websiteRows->fetch_assoc()) {
-		$title = $website['name'];
-		if ($title == "") $title = $website['url'];
-		$desc = $website['description'];
-		$url = $website['url'];
+	$linkArray = $websiteRows->fetch_all(MYSQLI_ASSOC);
+
+	for (var $i=0; $i<$linkArray->num_rows; $i++) {
+		$title = $linkArray[$i]['name'];
+		if ($title == "") $title = $linkArray[$i]['url'];
+		$desc = $linkArray[$i]['description'];
+		$url = $linkArray[$i]['url'];
 
 		if (substr($url, 0, 4) != "http") {
 			$url = "http://" . $url;
@@ -120,6 +131,10 @@ else {
 	}
 }
 
+<<<<<<< HEAD
+=======
+/*
+>>>>>>> 1f5a8bb4cbf3472d0c9e413732808c576c6f98e5
 //Set up how many records in one page
 　$pagesize=1;
 　mysql_select_db("mydata",$conn);
@@ -193,8 +208,12 @@ else {
 　		echo "<a href='fenye.php?page=".$next."'>Next Page</a> ";
 　		echo "<a href='fenye.php?page=".$last."'>End Page</a> ";
 	}
+<<<<<<< HEAD
 
 
 
 
+=======
+*/
+>>>>>>> 1f5a8bb4cbf3472d0c9e413732808c576c6f98e5
 ?>
