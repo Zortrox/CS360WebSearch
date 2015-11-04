@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Super Awesome Web Search - Results</title>
+	<title>WKU Search - Results</title>
 	<link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 <body>
