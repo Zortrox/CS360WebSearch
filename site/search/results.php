@@ -115,8 +115,8 @@ else {
 	$totalTime = round($endTime - $startTime, 3);
 	echo "$totalTime seconds</p>";
 
+	//get all rows
 	$linkArray = $websiteRows->fetch_all(MYSQLI_ASSOC);
-
 	for (var $i=0; $i<$linkArray->num_rows; $i++) {
 		$title = $linkArray[$i]['name'];
 		if ($title == "") $title = $linkArray[$i]['url'];
