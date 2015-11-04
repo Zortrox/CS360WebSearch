@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ERROR | E_PARSE);
+
 //timing setup
 $startTime = microtime(true);
 $endTime = null;
