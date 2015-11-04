@@ -1,34 +1,49 @@
 import java.net.*;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PortThread implements Runnable{
 	private Thread t;
 	private String address;
+	private int portNum;
 	Semaphore s;
+	AtomicInteger nIP, uIP, rIP;
 	
-	PortThread(int firstBlock, int secondBlock, Semaphore inSem) throws InterruptedException {
+	PortThread(int firstBlock, int secondBlock, int port, Semaphore inSem, AtomicInteger newIPs, AtomicInteger updatedIPs, AtomicInteger removedIPs) throws InterruptedException {
 		address = "161.6." + firstBlock + "." + secondBlock;
+		
+		switch(port){
+		case 0:
+			portNum = 80;
+			break;
+		case 1:
+			portNum = 443;
+			break;
+		}
+		
 		s = inSem;
-		if (secondBlock % 255 == 0) System.out.println("## - " +  address );
+		
+		nIP = newIPs;
+		uIP = updatedIPs;
+		rIP = removedIPs;
 	}
 	
 	@Override
 	public void run() {
-		boolean normPort = serverListening(address, 80);
-		boolean httpsPort = false;//serverListening(address, 443);
+		boolean listening = serverListening(address, portNum);
 		
-		if (normPort || httpsPort) {
-			String port = "";
-		
-			//write each address and port to console
-			if (normPort) {
-				port = ":80";
-				System.out.println(address + port);
+		if (listening) {
+			//download website data
+			//parse to determine what kind of site
+			//add to database
+			int addType = DatabaseManager.addIP(address + ":" + portNum, true);
+			if (addType == 0) {
+				nIP.incrementAndGet();
+			} else if (addType == 1) {
+				uIP.incrementAndGet();
 			}
-			if (httpsPort) {
-				port = ":443";
-				System.out.println(address + port);
-			}
+		} else {
+			rIP.addAndGet(DatabaseManager.removeIP(address + ":" + portNum));
 		}
 		
 		s.release();
@@ -38,7 +53,7 @@ public class PortThread implements Runnable{
 	{
 		if (t == null)
 		{
-			t = new Thread (this, address);
+			t = new Thread (this, address + ":" + portNum);
 			t.start ();
 		}
 	}
