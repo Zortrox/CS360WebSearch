@@ -101,11 +101,13 @@ else {
 	$totalTime = round($endTime - $startTime, 3);
 	echo "$totalTime seconds</p>";
 
-	while ($website = $websiteRows->fetch_assoc()) {
-		$title = $website['name'];
-		if ($title == "") $title = $website['url'];
-		$desc = $website['description'];
-		$url = $website['url'];
+	$linkArray = $websiteRows->fetch_all(MYSQLI_ASSOC);
+
+	for (var $i=0; $i<$linkArray->num_rows; $i++) {
+		$title = $linkArray[$i]['name'];
+		if ($title == "") $title = $linkArray[$i]['url'];
+		$desc = $linkArray[$i]['description'];
+		$url = $linkArray[$i]['url'];
 
 		if (substr($url, 0, 4) != "http") {
 			$url = "http://" . $url;
@@ -115,7 +117,7 @@ else {
 	}
 }
 
-
+/*
 //Set up how many records in one page
 　$pagesize=1;
 　mysql_select_db("mydata",$conn);
@@ -189,5 +191,5 @@ else {
 　		echo "<a href='fenye.php?page=".$next."'>Next Page</a> ";
 　		echo "<a href='fenye.php?page=".$last."'>End Page</a> ";
 	}
-
+*/
 ?>
