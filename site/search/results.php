@@ -109,7 +109,7 @@ else {
 
 	//get all rows to ready for page-by-page nav
 	$linkArray = $websiteRows->fetch_all(MYSQLI_ASSOC);
-	for (var $i=0; $i<$linkArray->num_rows; $i++) {
+	for ($i=0; $i<$linkArray->num_rows; $i++) {
 		$title = $linkArray[$i]['name'];
 		if ($title == "") $title = $linkArray[$i]['url'];
 		$desc = $linkArray[$i]['description'];
