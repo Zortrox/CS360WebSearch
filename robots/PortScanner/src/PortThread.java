@@ -6,10 +6,12 @@ public class PortThread implements Runnable{
 	private Thread t;
 	private String address;
 	private int portNum;
+	private long startTime;
 	Semaphore s;
 	AtomicInteger nIP, uIP, rIP;
 	
-	PortThread(int firstBlock, int secondBlock, int port, Semaphore inSem, AtomicInteger newIPs, AtomicInteger updatedIPs, AtomicInteger removedIPs) throws InterruptedException {
+	PortThread(int firstBlock, int secondBlock, int port, Semaphore inSem, AtomicInteger newIPs, AtomicInteger updatedIPs,
+			AtomicInteger removedIPs, long sTime) throws InterruptedException {
 		address = "161.6." + firstBlock + "." + secondBlock;
 		
 		switch(port){
@@ -26,6 +28,8 @@ public class PortThread implements Runnable{
 		nIP = newIPs;
 		uIP = updatedIPs;
 		rIP = removedIPs;
+		
+		startTime = sTime;
 	}
 	
 	@Override
@@ -45,6 +49,9 @@ public class PortThread implements Runnable{
 		} else {
 			rIP.addAndGet(DatabaseManager.removeIP(address + ":" + portNum));
 		}
+		
+		//output current time if not displaying progress bar
+		if (startTime != -1) System.out.println(System.nanoTime() - startTime);
 		
 		s.release();
 	}

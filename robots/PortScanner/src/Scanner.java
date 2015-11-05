@@ -27,18 +27,16 @@ public class Scanner {
     			for (int p=0; p<2; p++) {
 	    			s.acquire();
 	    			
-	    			long threadTime = 0;
+	    			long threadTime = -1;
 	    			if (drawProgress) drawProgressBar(++numIPScanned, maxIPs, startTime);
 	    			else threadTime = System.nanoTime();
 	    			
-	    			Runnable r = new PortThread(i, j, p, s, newIPs, updatedIPs, removedIPs);
+	    			Runnable r = new PortThread(i, j, p, s, newIPs, updatedIPs, removedIPs, threadTime);
 	    			if (numIPScanned >= maxIPs - maxThreads){
 	    				threads[numIPScanned - (maxIPs - maxThreads) - 1] = new Thread(r);
 	    				threads[numIPScanned - (maxIPs - maxThreads) - 1].start();
 	    			}
 	    			else new Thread(r).start();
-	    			
-	    			if (!drawProgress) System.out.println(System.nanoTime() - threadTime);
     			}
     		}
     	}
