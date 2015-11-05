@@ -108,8 +108,11 @@ else {
 	echo "$totalTime seconds</p>";
 
 	//get all rows to ready for page-by-page nav
-	$linkArray = $websiteRows->fetch_all(MYSQLI_ASSOC);
-	for ($i=0; $i<$linkArray->num_rows; $i++) {
+	$linkArray = array();
+	while ($tempSite = $websiteRows->fetch_assoc()) {
+		array_push($linkArray, $tempSite);
+	}
+	for ($i=0; $i<$sitesFound; $i++) {
 		$title = $linkArray[$i]['name'];
 		if ($title == "") $title = $linkArray[$i]['url'];
 		$desc = $linkArray[$i]['description'];
