@@ -51,7 +51,7 @@ public class PortThread implements Runnable{
 		}
 		
 		//output current time if not displaying progress bar
-		if (startTime != -1) System.out.println((double)(System.nanoTime() - startTime)/1000000000.0);
+		if (startTime != -1) System.out.println((double)(System.nanoTime() - startTime)/1000000000.0 + " seconds");
 		
 		s.release();
 	}
