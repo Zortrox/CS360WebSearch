@@ -5,13 +5,16 @@ public class Scanner {
 
     public static void main(String[] args) throws InterruptedException {
     	long startTime = System.nanoTime();
-    	int maxThreads = 256;
+    	int maxThreads = 5;
     	Semaphore s = new Semaphore(maxThreads);
     	int numIPScanned = 0;
     	final int maxIPs = 65536*2; //131072
     	AtomicInteger newIPs = new AtomicInteger(0);
     	AtomicInteger updatedIPs = new AtomicInteger(0);
     	AtomicInteger removedIPs = new AtomicInteger(0);
+    	
+    	boolean drawProgress = true;
+    	if (args.length > 0) drawProgress = (args[0] == "false" | args[0] == "0");
     	
     	//newline for neatness
     	System.out.println("");
@@ -23,8 +26,12 @@ public class Scanner {
     		for (int j=0; j<256; j++) {
     			for (int p=0; p<2; p++) {
 	    			s.acquire();
-	    			drawProgressBar(++numIPScanned, maxIPs, startTime);
-	    			Runnable r = new PortThread(i, j, p, s, newIPs, updatedIPs, removedIPs);
+	    			
+	    			long threadTime = -1;
+	    			if (drawProgress) drawProgressBar(++numIPScanned, maxIPs, startTime);
+	    			else threadTime = System.nanoTime();
+	    			
+	    			Runnable r = new PortThread(i, j, p, s, newIPs, updatedIPs, removedIPs, threadTime);
 	    			if (numIPScanned >= maxIPs - maxThreads){
 	    				threads[numIPScanned - (maxIPs - maxThreads) - 1] = new Thread(r);
 	    				threads[numIPScanned - (maxIPs - maxThreads) - 1].start();
