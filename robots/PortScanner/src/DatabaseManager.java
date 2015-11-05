@@ -53,6 +53,7 @@ public class DatabaseManager {
 	        		pst.setBoolean(1, inUse);
 	        		pst.setString(2, ipAddress);
 	        		pst.execute();
+	        		pst.close();
 	        		//System.out.println("Updating current listening server. - " + ipAddress);
 	        		return 1;
 	        	}
@@ -60,11 +61,10 @@ public class DatabaseManager {
 			
 			pst = connection.prepareStatement("INSERT INTO webServers (IP, inUse)"
 					+ " VALUES (?, ?)");
-			
 			pst.setString(1, ipAddress);
 			pst.setBoolean(2, inUse);
-			
 			pst.executeUpdate();
+			pst.close();
 			//System.out.println("New listening server found! - " + ipAddress);
 			return 0;
 			
@@ -86,10 +86,13 @@ public class DatabaseManager {
 	        		pst = connection.prepareStatement("DELETE FROM webServers WHERE IP=?");
 	        		pst.setString(1, ipAddress);
 	        		pst.execute();
-	        		System.out.println("Server no longer listening. - " + ipAddress);
+	        		pst.close();
+	        		//System.out.println("Server no longer listening. - " + ipAddress);
 	        		return 1;
 	        	}
 	        }
+	        
+	        pst.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
