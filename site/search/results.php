@@ -202,12 +202,5 @@ else {
 　		echo "<a href='fenye.php?page=".$next."'>Next Page</a> ";
 　		echo "<a href='fenye.php?page=".$last."'>End Page</a> ";
 	}
-<<<<<<< HEAD
-
-
-
-
-=======
 */
->>>>>>> 1f5a8bb4cbf3472d0c9e413732808c576c6f98e5
 ?>
