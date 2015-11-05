@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+error_reporting(E_ERROR | E_PARSE);
 
 //timing setup
 $startTime = microtime(true);
@@ -128,9 +128,12 @@ else {
 	$totalTime = round($endTime - $startTime, 3);
 	echo "$totalTime seconds</p>";
 
-	//get all rows
-	$linkArray = $websiteRows->fetch_all(MYSQLI_ASSOC);
-	for (var $i=0; $i<$linkArray->num_rows; $i++) {
+	//get all rows to ready for page-by-page nav
+	$linkArray = array();
+	while ($tempSite = $websiteRows->fetch_assoc()) {
+		array_push($linkArray, $tempSite);
+	}
+	for ($i=0; $i<$sitesFound; $i++) {
 		$title = $linkArray[$i]['name'];
 		if ($title == "") $title = $linkArray[$i]['url'];
 		$desc = $linkArray[$i]['description'];
