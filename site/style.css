@@ -9,7 +9,6 @@ body {
 }
 
 #wrapper {
-	display: table;
 	background-color: #FFF;
 	width: 80%;
 	min-height: 100%;
@@ -17,12 +16,6 @@ body {
 	margin-right: auto;
 	box-shadow: 0px 0px 4px #000;
 	overflow: auto;
-}
-#middle-div {
-	display: table-cell;
-	vertical-align: middle;
-	width: 100%;
-	height: auto;
 }
 
 #logo {
