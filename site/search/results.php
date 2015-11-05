@@ -107,7 +107,7 @@ else {
 	$totalTime = round($endTime - $startTime, 3);
 	echo "$totalTime seconds</p>";
 
-	//get all rows
+	//get all rows to ready for page-by-page nav
 	$linkArray = $websiteRows->fetch_all(MYSQLI_ASSOC);
 	for (var $i=0; $i<$linkArray->num_rows; $i++) {
 		$title = $linkArray[$i]['name'];
