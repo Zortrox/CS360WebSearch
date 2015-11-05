@@ -82,6 +82,7 @@ public class DatabaseManager {
 	        rs = pst.executeQuery();
 	        
 	        while (rs.next()) {
+	        	
 	        	if(rs.getString(1).equals(ipAddress)){
 	        		pst = connection.prepareStatement("DELETE FROM webServers WHERE IP=?");
 	        		pst.setString(1, ipAddress);
