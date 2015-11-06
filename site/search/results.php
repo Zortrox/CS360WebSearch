@@ -159,7 +159,7 @@ else {
 			echo "<a href='results.php?page=$i'>$i</a> ";
 		}
 	}
-	echo "<br>"
+	echo "<br>";
 	if ($page > 1)
 	{
 	　		echo "<a href='results.php?page=$first'>First</a> ";
