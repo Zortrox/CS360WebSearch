@@ -152,6 +152,7 @@ else {
 	$prev = $page-1;
 	$next = $page+1;
 	$last = $pages;
+	echo "<div id='page-change'>";
 	for ($i=1; $i<=$pages; $i++) {
 		if ($i==$page) {
 			echo "$page ";
@@ -170,6 +171,7 @@ else {
 		echo "<a href='?q=$query&p=$next'>Next</a> ";
 		echo "<a href='?q=$query&p=$last'>End</a> ";
 	}
+	echo "</div>";
 }
 
 ?>

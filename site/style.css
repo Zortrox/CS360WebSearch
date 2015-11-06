@@ -74,3 +74,10 @@ input {
 #home-button:active {
 	color: black;
 }
+
+#page-change a:link,
+#page-change a:active,
+#page-change a:visited,
+#page-change a:hover {
+	color: #C7002E;
+}
