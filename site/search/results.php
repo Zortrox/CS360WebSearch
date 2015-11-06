@@ -112,7 +112,7 @@ else {
 	$pagesize = 10;
 
 	//calculate how many pages to display those records
-	$pages = $sitesFound/$pagesize);
+	$pages = $sitesFound/$pagesize;
 	if ($numrows%$pagesize) $pages += 1;
 	$pages = intval($pages);
 
