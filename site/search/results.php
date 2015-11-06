@@ -123,6 +123,10 @@ else {
 		//set as the first page 
 		$page = 1;
 	}
+	//adds bounds to pages
+	if ($page < 1) $page = 1;
+	else if ($page > $pages) $page = $pages;
+
 	//calculate the offset of the records
 	$offset = $pagesize*($page - 1);
 
