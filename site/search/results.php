@@ -108,12 +108,30 @@ else {
 	$totalTime = round($endTime - $startTime, 3);
 	echo "$totalTime seconds</p>";
 
+	//Set up how many records in one page
+	$pagesize=10;
+
+	//calculate how many pages to display those records
+	$pages=intval($sitesFound/$pagesize);
+	if ($numrows%$pagesize) $pages++;
+
+	//get current page
+	if (isset($_GET['p'])){
+		$page=intval($_GET['p']);
+	}
+	else{
+		//set as the first page 
+		$page=1;
+	}
+	//calculate the offset of the records
+	$offset=$pagesize*($page - 1);
+
 	//get all rows to ready for page-by-page nav
 	$linkArray = array();
 	while ($tempSite = $websiteRows->fetch_assoc()) {
 		array_push($linkArray, $tempSite);
 	}
-	for ($i=0; $i<$sitesFound; $i++) {
+	for ($i=$offset; $i<$sitesFound; $i++) {
 		$title = $linkArray[$i]['name'];
 		if ($title == "") $title = $linkArray[$i]['url'];
 		$desc = $linkArray[$i]['description'];
@@ -124,83 +142,39 @@ else {
 		}
 
 		echo "<p><a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url'> $url </a></p>";
+
+		//only go for 10 pages
+		if ($i-$offset == 9) break;
 	}
-}
 
-/*
->>>>>>> 1f5a8bb4cbf3472d0c9e413732808c576c6f98e5
-//Set up how many records in one page
-　$pagesize=1;
-　mysql_select_db("mydata",$conn);
-　//get size of the records
-　$rs=mysql_query("select count(*) from tb_product",$conn);
-　$myrow = mysql_fetch_array($rs);
-　$numrows=$myrow[0];
-　//calculate how many pages to display those records
-
-　$pages=intval($numrows/$pagesize);
-　if ($numrows%$pagesize)
-　　$pages++;
-　//set up total pages
-　if (isset($_GET['page'])){
-　　$page=intval($_GET['page']);
-　}
-　else{
-　　//set as the first page 
-　　$page=1;
-　}
-　//calculate the offset of the records
-　$offset=$pagesize*($page - 1);
-　//read certain size of records
-　$rs=mysql_query("select * from myTable order by id desc limit $offset,$pagesize",$conn);
-　if ($myrow = mysql_fetch_array($rs))
-　{
-　　$i=0;
-　　?>
-　　<table border="0" width="80%">
-　　<tr>
-　　　<td width="50%" bgcolor="#E0E0E0">
-　　　　<p align="center">Title</td>
-　　　　<td width="50%" bgcolor="#E0E0E0">
-　　　　<p align="center">Est Time</td>
-　　</tr>
-　　<?php
-　　　do {
-　　　　$i++;
-　　　　?>
-　　<tr>
-　　　<td width="50%"><?=$myrow["news_title"]?></td>
-　　　<td width="50%"><?=$myrow["news_cont"]?></td>
-　　</tr>
-　　　<?php>
-　　　}
-　　　while ($myrow = mysql_fetch_array($rs));
-　　　　echo "</table>";
-　　}
-　　echo "<div align='center'>Total:".$pages."Pages(".$page."/".$pages.")";
-　　for ($i=1;$i<$page;$i++)
-　　　echo "<a href='fenye.php?page=".$i."'>[".$i ."]</a> ";
-　　　echo "[".$page."]";
-　　　for ($i=$page+1;$i<=$pages;$i++)
-　　　　echo "<a href='fenye.php?page=".$i."'>[".$i ."]</a> ";
-　　　　echo "</div>";
-　　
-　
+	//write pages at bottom
 	$first=1;
 	$prev=$page-1;
 	$next=$page+1;
 	$last=$pages;
-
+	for ($i=1; $i<=$pages; $i++) {
+		if ($i==$page) {
+			echo "$page ";
+		} else {
+			echo "<a href='results.php?page=$i'>$i</a> ";
+		}
+	}
+	echo "<br>"
 	if ($page > 1)
 	{
-　		echo "<a href='fenye.php?page=".$first."'>First Page</a> ";
-　		echo "<a href='fenye.php?page=".$prev."'>Prev Page</a> ";
+	　		echo "<a href='results.php?page=$first'>First</a> ";
+	　		echo "<a href='results.php?page=$prev'>Prev</a> ";
 	}
-
 	if ($page < $pages)
 	{
-　		echo "<a href='fenye.php?page=".$next."'>Next Page</a> ";
-　		echo "<a href='fenye.php?page=".$last."'>End Page</a> ";
+	　		echo "<a href='results.php?page=$next'>Next</a> ";
+	　		echo "<a href='results.php?page=$last'>End</a> ";
 	}
-*/
+}
+
+
+　　
+　
+
+
 ?>
