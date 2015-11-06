@@ -109,11 +109,12 @@ else {
 	echo "$totalTime seconds</p>";
 
 	//Set up how many records in one page
-	$pagesize=10;
+	$pagesize = 10;
 
 	//calculate how many pages to display those records
-	$pages=intval($sitesFound/$pagesize);
-	if ($numrows%$pagesize) $pages++;
+	$pages = $sitesFound/$pagesize);
+	if ($numrows%$pagesize) $pages += 1;
+	$pages = intval($pages);
 
 	//get current page
 	if (isset($_GET['p'])){
@@ -121,10 +122,10 @@ else {
 	}
 	else{
 		//set as the first page 
-		$page=1;
+		$page = 1;
 	}
 	//calculate the offset of the records
-	$offset=$pagesize*($page - 1);
+	$offset = $pagesize*($page - 1);
 
 	//get all rows to ready for page-by-page nav
 	$linkArray = array();
@@ -148,10 +149,10 @@ else {
 	}
 
 	//write pages at bottom
-	$first=1;
-	$prev=$page-1;
-	$next=$page+1;
-	$last=$pages;
+	$first = 1;
+	$prev = $page-1;
+	$next = $page+1;
+	$last = $pages;
 	for ($i=1; $i<=$pages; $i++) {
 		if ($i==$page) {
 			echo "$page ";
