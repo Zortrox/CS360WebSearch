@@ -156,19 +156,19 @@ else {
 		if ($i==$page) {
 			echo "$page ";
 		} else {
-			echo "<a href='results.php?q=$query&p=$i'>$i</a> ";
+			echo "<a href='?q=$query&p=$i'>$i</a> ";
 		}
 	}
 	echo "<br>";
 	if ($page > 1)
 	{
-		echo "<a href='results.php?q=$query&p=$first'>First</a> ";
-		echo "<a href='results.php?q=$query&p=$prev'>Prev</a> ";
+		echo "<a href='?q=$query&p=$first'>First</a> ";
+		echo "<a href='?q=$query&p=$prev'>Prev</a> ";
 	}
 	if ($page < $pages)
 	{
-		echo "<a href='results.php?q=$query&p=$next'>Next</a> ";
-		echo "<a href='results.php?q=$query&p=$last'>End</a> ";
+		echo "<a href='?q=$query&p=$next'>Next</a> ";
+		echo "<a href='?q=$query&p=$last'>End</a> ";
 	}
 }
 
