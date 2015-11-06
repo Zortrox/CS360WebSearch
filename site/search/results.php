@@ -112,9 +112,8 @@ else {
 	$pagesize = 10;
 
 	//calculate how many pages to display those records
-	$pages = $sitesFound/$pagesize;
-	if ($numrows%$pagesize) $pages += 1;
-	$pages = intval($pages);
+	$pages = intval($sitesFound/$pagesize);
+	if ($sitesFound%$pagesize) $pages++;
 
 	//get current page
 	if (isset($_GET['p'])){
