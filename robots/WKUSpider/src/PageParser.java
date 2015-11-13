@@ -2,10 +2,12 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 /**
  * A tool for parsing the webpage data to collect information useful for building a search engine.
@@ -16,11 +18,11 @@ public class PageParser {
 	ArrayList<String> links;
 	ArrayList<Data> dataNodes;
 	String preview = "";
-	String[] lowWeight = {"of","a","the","and","is","in","to","all","in"};
+	String[] lowWeight = {"of","a","the","and","is","in","to","all","then","these","are","its"};
 	String text = "";
+	String paraText;
 	boolean isEmpty;
-	// we are also gonna need a dictionary of words and a way to determine weights	
-	
+
 	//161.6.0.0 - 161.6.255.255
 	
 	/*
@@ -51,70 +53,74 @@ public class PageParser {
 		if(src==null)
 			isEmpty = true;
 		
+//		System.out.println(clearTags(src.substring(src.indexOf("<body>"),src.length()-7)).replaceAll("\\s+", " "));
+//		if(1==1)
+//			return;
+		
 		links = new ArrayList<String>();
 		dataNodes = new ArrayList<Data>();
-		
-		// The title text is probably among the most important things to consider
-		
 		title = getTitle(src);
-//		System.out.println(title + "\n");
-		
 		
 		// for parsing
-		// for now just gets links
 		gatherLinks(src);
 		
-		String text = gatherText(src);
-		
-		text = text.replaceAll("\\s+"," ");
-		this.text = text;
-//		System.out.println(text);
+		// instead of paragraphs and headers, we'll just grab everything in the body...
+		String text = "";
+		int bodyStart = src.indexOf("<body>");
+		if(bodyStart == -1)
+			text = clearTags(src);
+		else
+			text = clearTags(src.substring(bodyStart,src.length()-7));
 		
 		preview = getDescription(src);
-		
 		if(preview.equals(""))
 			preview = text.substring(0,text.length() >= 295 ? 295 : text.length())+"...";
 
 		// remove punctuation for now
+		text = text.replaceAll("\\s+"," ");
+		text = text.replaceAll("\\&nbsp", "");
+		this.text = text;
 		text = text.replaceAll("\\.", "");
+		text = text.replaceAll("\"", "");
 		text = text.replaceAll("\\:", "");
-		text = text.replaceAll(",", "");
-		text = text.replaceAll("&nbsp", "");
-		text = text.replaceAll(";", "");
+		text = text.replaceAll("\\,", "");
+		text = text.replaceAll("\\;", "");
+		text = text.replaceAll("\\)", "");
+		text = text.replaceAll("\\(", "");
+		text = text.replaceAll("\\?", "");
+		text = text.replaceAll("\\#", "");
+
+		paraText = gatherParaText(src);
+		paraText = paraText.replaceAll("\\s+"," ");
+		paraText = paraText.replaceAll("\\&nbsp", "");
+		paraText = paraText.replaceAll("\\.", "");
+		paraText = paraText.replaceAll("\"", "");
+		paraText = paraText.replaceAll("\\:", "");
+		paraText = paraText.replaceAll("\\,", "");
+		paraText = paraText.replaceAll("\\;", "");
+		paraText = paraText.replaceAll("\\)", "");
+		paraText = paraText.replaceAll("\\(", "");
+		paraText = paraText.replaceAll("\\?", "");
+		paraText = paraText.replaceAll("\\#", "");
 		
+		// put all keywords into the data structure
 		String[] keywords = getKeywords(src);
 		if(keywords != null)
 			for(int i = 0 ; i < keywords.length ; i++)
-				addData(keywords[i], 100);
+				addData(keywords[i], 130);
 		
 		String[] titleWords = title.split(" ");
-		for(int i = 0 ; i < titleWords.length ; i++){
-			addData(titleWords[i], 80);
-		}
-
+		for(int i = 0 ; i < titleWords.length ; i++)
+			addData(titleWords[i], 100);
+		
+		String[] pwords = paraText.split(" ");
+		for(int w = 0 ; w < pwords.length ; w++)
+			addData(pwords[w], (int)((0.0 + pwords.length - w) / pwords.length * 100.0)+10);
+		
 		String[] words = text.split(" ");
 		for(int w = 0 ; w < words.length ; w++)
-			addData(words[w], (int)((0.0 + words.length - w) / words.length * 100.0));
-		
-		//---------------------------------------------------------------------------------------------------Remove eventually
-//		Collections.sort(dataNodes,new OrderNode());
-	}
-	
-	// This is just for display purposes. Can be deleted later...
-	class OrderNode implements Comparator<Data>{
-
-		@Override
-		public int compare(Data o1, Data o2) {
-			if(o1.weight > o2.weight)
-				return -1;
-			else if (o1.weight < o2.weight)
-				return 1;
-			return 0;
-		}
-		
-	}
-	
-		
+			addData(words[w], (int)((0.0 + words.length - w) / words.length * 80.0));
+	}	
 	
 	// DON'T FORGET THE HEADINGS!!!!
 	
@@ -141,10 +147,9 @@ public class PageParser {
 
 			
 			// make sure it's a WKU page and not a file
-			if (link.contains("wku.")
+			if (inWKURange(link)
 					&& (link.contains("php") || link.contains("htm") 
 					||  link.charAt(link.length() - 1) == '/')) {
-//				System.out.println(link);
 				links.add(link);
 			}
 			
@@ -156,8 +161,6 @@ public class PageParser {
 			else
 				code = code.substring(nextIndex+6);
 		}
-		
-//		System.out.println("\nDone - found " + links.size() + " WKU links");
 	}
 	
 	/**
@@ -176,8 +179,12 @@ public class PageParser {
 			return "";
 	}
 	
+	/**
+	 * Gets the page description tag
+	 * @param src
+	 * @return the description metadata and an empty string otherwise
+	 */
 	private String getDescription(String src){
-//		name="description" content="
 		if(src.contains("name=\"description\" content=\"")){
 			String code = src.substring(src
 					.indexOf("name=\"description\" content=\"") + 28);
@@ -189,6 +196,11 @@ public class PageParser {
 			return "";
 	}
 	
+	/**
+	 * Gets the page keywords
+	 * @param src - the page source
+	 * @return an Array containing the string keywords if any
+	 */
 	private String[] getKeywords(String src){
 //		name="description" content="
 		if(src.contains("name=\"keywords\" content=\"")){
@@ -196,7 +208,10 @@ public class PageParser {
 					.indexOf("name=\"keywords\" content=\"") + 25);
 			code = code.substring(0, code.indexOf("\">"));
 			
-			code.replaceAll(" ", "");
+			code = code.replaceAll(",\\s+", ",");
+			code = code.replaceAll("\\s+", ",");
+			
+//			code.replaceAll(", ", "");
 
 			return code.split(",");
 		}
@@ -204,7 +219,7 @@ public class PageParser {
 			return null;
 	}
 	
-	private String gatherText(String src){
+	private String gatherParaText(String src){
 		String text = "";
 		
 		int index = src.indexOf("<p>");
@@ -230,25 +245,33 @@ public class PageParser {
 		return text;
 	}
 	
+	/**
+	 * Adds a keyword data to be stored in the database
+	 * @param in - the word to add
+	 * @param weight - the initial weight
+	 */
 	private void addData(String in, int weight){
 		Data d = new Data(in);
 
 		d.weight += weight;
 		
+		if(in.equals("") || in.equals(" "))
+			return;
+		
 		if(!dataNodes.contains(d)){
-			if(title.toLowerCase().contains(in.toLowerCase()))
-				d.weight += 100;
+			// low weight words get reduced weight
 			for(int i = 0 ; i < lowWeight.length ; i ++)
 				if(lowWeight[i].equals(in))
 					d.weight /= 4;
+			
 			dataNodes.add(d);
 		}
 		else{
 			d = dataNodes.get(dataNodes.indexOf(d));
-			d.weight += 5;
 			for(int i = 0 ; i < lowWeight.length ; i ++)
 				if(lowWeight[i].equals(in))
 					d.weight /= 4;
+			d.weight += 5;
 		}
 		
 	}
@@ -265,8 +288,10 @@ public class PageParser {
 		String edited = "";
 		
 		for(int i = 0; i < input.length() ; i++){
-			if(input.charAt(i) == '<')
+			if(input.charAt(i) == '<'){
 				while(input.charAt(i) != '>') i++;
+				edited += " ";
+			}
 			else
 				edited += input.charAt(i);
 		}
@@ -274,9 +299,35 @@ public class PageParser {
 		return edited;
 	}
 	
+	/**
+	 * Checks if the ip of this url is within WKU's range
+	 * @param url - the address of the page
+	 * @return true if the ip is in WKU's range
+	 */
+	private boolean inWKURange(String url){
+		String[] prot = getIP(url).split("\\.");
+		if(prot[0].equals("161") && prot[1].equals("6"))
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Returns the ip address of given url
+	 * @param address - the url
+	 * @return the ip address
+	 */
+	public static String getIP(String address){
+		try {
+			return InetAddress.getByName(new URL(address).getHost()).getHostAddress();
+		} catch (UnknownHostException e) {
+		} catch (MalformedURLException e) {
+		}
+		return "";
+	}
 	
 	
-	
+	// some getters
 	public ArrayList<String> getLinks(){
 		return links;
 	}

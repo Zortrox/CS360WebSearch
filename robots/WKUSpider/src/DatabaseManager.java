@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class DatabaseManager {
-
+	
 	static Connection connection;
 	private static final String url = "jdbc:mysql://127.0.0.1:3306/webSearchEngine";
 	private static final String user = "crawl";
@@ -33,6 +33,9 @@ public class DatabaseManager {
 		return false;
 	}
 	
+	/**
+	 * Closes the connection
+	 */
 	public static void Exit(){
 		try {
 			connection.close();
@@ -42,6 +45,11 @@ public class DatabaseManager {
 		}
 	}
 	
+	/**
+	 * Gets the location index of a URL
+	 * @param url - the url of the page
+	 * @return the index of the location
+	 */
 	public static int getLocation(String url){
 		try {
 			PreparedStatement pst = connection.prepareStatement("SELECT webId FROM locations WHERE url = \""+url+"\"");
@@ -51,17 +59,18 @@ public class DatabaseManager {
 	        
 	        while(rs.next())
 	        	index = rs.getInt(1);
+
+	        pst.close();
+	        rs.close();
 	        
 	        return index;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
         return -1;
 	}
 	
-	//(webId, name, description, url, hash)
 	/**
 	 * Adds a new location to the database
 	 * @param url - the URL of the page
@@ -87,11 +96,15 @@ public class DatabaseManager {
 				pst.setString(2, description);
 				pst.setInt(3, index);
 				pst.execute();
+				
+		        pst.close();
+		        rs.close();
+				
 				return index;
 			} else {
 
 				PreparedStatement pst2 = connection.prepareStatement("INSERT INTO locations (name, description, url, siteFullText)"
-								+ " values (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+						+ " values (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
 				pst2.setString(1, name);
 				pst2.setString(2, description);
@@ -102,6 +115,12 @@ public class DatabaseManager {
 
 				ResultSet rs2 = pst2.getGeneratedKeys();
 				rs2.next();
+				
+				pst2.close();
+				rs2.close();
+
+		        pst.close();
+		        rs.close();
 
 				return rs2.getInt(1);
 			}
@@ -111,7 +130,11 @@ public class DatabaseManager {
 		return -1;
 	}
 	
-	
+	/**
+	 * Gets the keyword index in the database
+	 * @param keyword - the keyword as a string case-insensitive
+	 * @return the index of the keyword
+	 */
 	public static int addKeyword(String keyword){
 		try {
 			PreparedStatement pst = connection.prepareStatement("SELECT keyId FROM keywords WHERE word = \""+keyword+"\"");
@@ -126,11 +149,6 @@ public class DatabaseManager {
 	        	return index;
 	        else
 	        {
-				if (keyword.length() >= 15) {
-					System.out.println(keyword + " too long for keyword column");
-					return -1;
-				}
-
 				pst = connection.prepareStatement("INSERT INTO keywords (word) " + "values (?)",Statement.RETURN_GENERATED_KEYS);
 				pst.setString(1, keyword.toLowerCase());
 				pst.executeUpdate();
@@ -141,6 +159,10 @@ public class DatabaseManager {
 				
 		        while(rs2.next())
 		        	ni = rs2.getInt(1);
+		        
+		        pst.close();
+		        rs.close();
+		        rs2.close();
 
 				return ni;
 			}
@@ -188,12 +210,18 @@ public class DatabaseManager {
 				pst2.setInt(2,keyID);
 				pst2.setInt(3, d.weight);
 				pst2.execute();
+				
+		        pst.close();
+		        rs.close();
+		        pst2.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 		
 	}
+	
+	
 	
 	public static void visit(String u){
 		visited.add(u);
@@ -216,6 +244,8 @@ public class DatabaseManager {
 				System.out.print(rs.getString(4) + " : ");
 				System.out.print(rs.getString(5) + " : ");
 			}
+	        pst.close();
+	        rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -232,8 +262,9 @@ public class DatabaseManager {
 				System.out.print(rs.getInt(1) + " : ");
 				System.out.print(rs.getString(2) + " : ");
 			}
+	        pst.close();
+	        rs.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -249,8 +280,10 @@ public class DatabaseManager {
 				System.out.print(rs.getInt(2) + " : ");
 				System.out.print(rs.getInt(3) + " : ");
 			}
+			
+	        pst.close();
+	        rs.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

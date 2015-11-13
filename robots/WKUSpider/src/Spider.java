@@ -32,8 +32,10 @@ public class Spider extends Thread{
 			System.out.println("Thread " + (id == -1 ? "Initial" : id) + " is starting");
 			run(links.remove());
 			try {
-				Thread.sleep(4000);
-				if(!links.isEmpty()) run(links.remove());
+				if(id != -1){
+					Thread.sleep(4000);
+					if(!links.isEmpty()) run(links.remove());
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -76,6 +78,5 @@ public class Spider extends Thread{
 			return;
 
 		numOfSearches--;
-		run(links.remove());
 	}
 }

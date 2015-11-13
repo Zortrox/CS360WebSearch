@@ -36,7 +36,6 @@ public class SpiderThread {
 					if(t!=null)
 						t.join();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			

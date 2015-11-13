@@ -1,6 +1,14 @@
-commands:
-"-display" then the name of a database
-"a number" and it will index that many pages starting from WKU's homepage
-you can enter a "-1" to have it transverse indefinitly until it runs out of links to follow
-you can enter a different starting location after the number to start there instead
-After the starting location you can enter number of threads to use. Default is 10
+The crawler got a mini makeover in functionality.
+
+Fixes:
+The database statements and results are hopefully all closed now
+The page parser now collections more information than ever, but loses some weight accuracy.
+the Driver(Testing) now has commands
+
+
+Driver's new commands
+-start 		: starts the spider
+-display 		: enter the database name to display its contents
+-amt 		: set the amount of pages for each thread to transverse
+-numOfThreads 	: set the maximum number of threads to use
+-startURL 		: enter the starting URL location
