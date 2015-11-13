@@ -84,10 +84,10 @@ public class Testing {
 			long totalTime = (System.nanoTime() - startTime);
 			System.out.println(th.numOfPages + " pages crawled in " + ""
 					+ TimeUnit.NANOSECONDS.toHours(totalTime) + " hours " + ""
-					+ TimeUnit.NANOSECONDS.toMinutes(totalTime) + " minutes "
-					+ "" + TimeUnit.NANOSECONDS.toSeconds(totalTime)
+					+ TimeUnit.NANOSECONDS.toMinutes(totalTime)%60 + " minutes "
+					+ "" + TimeUnit.NANOSECONDS.toSeconds(totalTime)%60
 					+ " seconds " + ""
-					+ TimeUnit.NANOSECONDS.toMillis(totalTime)
+					+ TimeUnit.NANOSECONDS.toMillis(totalTime)%1000
 					+ " milliseconds");
 		}
 		
