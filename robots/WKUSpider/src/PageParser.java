@@ -73,8 +73,9 @@ public class PageParser {
 			text = clearTags(src.substring(bodyStart,src.length()-7));
 		
 		preview = getDescription(src);
+		paraText = gatherParaText(src);
 		if(preview.equals(""))
-			preview = text.substring(0,text.length() >= 295 ? 295 : text.length())+"...";
+			preview = paraText.substring(0,paraText.length() >= 295 ? 295 : paraText.length())+"...";
 
 		// remove punctuation for now
 		text = text.replaceAll("\\s+"," ");
@@ -90,7 +91,6 @@ public class PageParser {
 		text = text.replaceAll("\\?", "");
 		text = text.replaceAll("\\#", "");
 
-		paraText = gatherParaText(src);
 		paraText = paraText.replaceAll("\\s+"," ");
 		paraText = paraText.replaceAll("\\&nbsp", "");
 		paraText = paraText.replaceAll("\\.", "");

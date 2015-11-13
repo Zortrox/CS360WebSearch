@@ -221,6 +221,32 @@ public class DatabaseManager {
 		
 	}
 	
+	/**
+	 * Gets an array of the in-use WebServers
+	 * @return - string array of in-use webservers
+	 */
+	public static ArrayList<String> getWebServerList(){
+		try {
+			PreparedStatement pst = connection.prepareStatement("SELECT * FROM webServers");
+			ResultSet rs = pst.executeQuery();
+			
+			ArrayList<String> list = new ArrayList<String>();
+
+			while (rs.next()) {
+				String url = rs.getString(1);
+				if(rs.getBoolean(2))
+					list.add(url);		
+			}
+			
+	        pst.close();
+	        rs.close();
+	        
+	        return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	
 	public static void visit(String u){
@@ -279,6 +305,24 @@ public class DatabaseManager {
 				System.out.print(rs.getInt(1) + " : ");
 				System.out.print(rs.getInt(2) + " : ");
 				System.out.print(rs.getInt(3) + " : ");
+			}
+			
+	        pst.close();
+	        rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void printWebServers(){
+		try {
+			PreparedStatement pst = connection.prepareStatement("SELECT * FROM webServers");
+			ResultSet rs = pst.executeQuery();
+
+			while (rs.next()) {
+				System.out.println();
+				System.out.print(rs.getString(1) + " : ");
+				System.out.print(rs.getBoolean(2) + " : ");
 			}
 			
 	        pst.close();

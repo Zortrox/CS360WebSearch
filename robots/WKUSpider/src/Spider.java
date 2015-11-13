@@ -50,7 +50,7 @@ public class Spider extends Thread{
 	 * @param url
 	 */
 	private void run(String url){
-		System.out.println("Spider " + id + " is crawling... " + url);
+//		System.out.println("Spider " + id + " is crawling... " + url);
 		
 		controller.numOfPages++;
 		
