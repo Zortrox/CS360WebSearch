@@ -81,3 +81,7 @@ input {
 #page-change a:hover {
 	color: #C7002E;
 }
+
+.title:hover {
+	text-decoration : underline;
+}

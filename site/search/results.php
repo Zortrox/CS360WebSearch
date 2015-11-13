@@ -145,7 +145,7 @@ else {
 			$url = "http://" . $url;
 		}
 
-		echo "<p><a href='$url'> <b> $title </b> </a> <br> $desc <br> <a href='$url' style='font-family:sans-serif;'> $url </a></p>";
+		echo "<p><a href='$url' class='title' style='font-family:ariel,sans-serif;'> <b> $title </b> </a> <br> $desc <br> <a href='$url' style='text-decoration:none;'> $url </a></p>";
 
 		//only go for 10 pages
 		if ($i-$offset == 9) break;
