@@ -83,7 +83,7 @@ else {
 	//gather all webIds of websites based on keywords found
 	//sort in descending order based on cumulative word weights
 	$webArray = array();
-	$webIDQuery = "SELECT webId FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
+	$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
 	$webIDResults = $mysqli->query($webIDQuery);
 	while ($siteKeywordsRow = $webIDResults->fetch_row()) {
 		$webID = $siteKeywordsRow[0];
