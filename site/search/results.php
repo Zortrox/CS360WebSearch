@@ -95,6 +95,7 @@ else {
 		}
 	}
 	arsort($webArray);
+	print_r($webArray);
 
 	//get all location data based on webIds found
 	$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
