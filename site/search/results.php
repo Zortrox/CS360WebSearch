@@ -53,7 +53,7 @@ function orderArray($wordArray){
 	$construct = "";
 	
 	foreach( $wordArray as $wordKey => $wordValue ) {
-		$construct .= $wordValue . ",";
+		$construct .= $wordKey . ",";
 	}
 	
 	$construct = trim($construct, ",");
