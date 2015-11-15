@@ -49,7 +49,7 @@ function createConstruct($wordArray, $column, $useKey = false) {
 	return $construct;
 }
 
-function createOrder($wordArray){
+function orderArray($wordArray){
 	$construct = "";
 	
 	foreach( $wordArray as $wordKey => $wordValue ) {
@@ -110,7 +110,7 @@ else {
 
 	//get all location data based on webIds found
 	//$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
-	$websiteRowQuery = "SELECT * FROM locations WHERE webID IN (" . createOrder($webArray) . ") ORDER BY FIELD (webID," . orderArray($webArray) . ")";
+	$websiteRowQuery = "SELECT * FROM locations WHERE webID IN (" . orderArray($webArray) . ") ORDER BY FIELD (webID," . orderArray($webArray) . ")";
 	$websiteRows = $mysqli->query($websiteRowQuery);
 
 	//display number of results found in how much time
