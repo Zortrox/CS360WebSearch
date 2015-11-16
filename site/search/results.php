@@ -147,7 +147,7 @@ else {
 	$linkArray = array();
 	foreach ( $webArray as $webKey => $webValue ) {
 		$tempSite = $websiteRows->fetch_assoc();
-		push_array($tempSite);
+		array_push($tempSite);
 	}
 	for($i=0; $i<$sitesFound; $i++) {
 		$title = $linkValue['name'];
