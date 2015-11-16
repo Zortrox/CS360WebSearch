@@ -150,6 +150,8 @@ else {
 		array_push($tempSite);
 	}
 	for($i=0; $i<$sitesFound; $i++) {
+		$linkValue = $linkArray[$i];
+
 		$title = $linkValue['name'];
 		if ($title == "") $title = $linkValue['url'];
 		$desc = $linkValue['description'];
