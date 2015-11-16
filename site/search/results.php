@@ -110,7 +110,7 @@ else {
 
 	//get all location data based on webIds found
 	//$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
-	$websiteRowQuery = "SELECT * FROM locations WHERE webID IN (" . orderArray($webArray) . ") ORDER BY FIELD (webID," . orderArray($webArray) . ")";
+	$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
 	$websiteRows = $mysqli->query($websiteRowQuery);
 
 	//display number of results found in how much time
@@ -145,14 +145,15 @@ else {
 
 	//get all rows to ready for page-by-page nav
 	$linkArray = array();
-	while ($tempSite = $websiteRows->fetch_assoc()) {
-		array_push($linkArray, $tempSite);
+	foreach ( $webArray as $webKey => $webValue ) {
+		$tempSite = $websiteRows->fetch_assoc();
+		$linkArray[$webKey] = $tempSite;
 	}
-	for ($i=$offset; $i<$sitesFound; $i++) {
-		$title = $linkArray[$i]['name'];
-		if ($title == "") $title = $linkArray[$i]['url'];
-		$desc = $linkArray[$i]['description'];
-		$url = $linkArray[$i]['url'];
+	foreach ( $linkArray as $linkValue ) {
+		$title = $linkValue['name'];
+		if ($title == "") $title = $linkValue['url'];
+		$desc = $linkValue['description'];
+		$url = $linkValue['url'];
 
 		if (substr($url, 0, 4) != "http") {
 			$url = "http://" . $url;
