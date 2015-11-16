@@ -163,6 +163,7 @@ else {
 
 		//only go for 10 pages
 		if ($i-$offset == 9) break;
+		$i++;
 	}
 
 	//write pages at bottom
