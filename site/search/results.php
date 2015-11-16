@@ -147,9 +147,9 @@ else {
 	$linkArray = array();
 	foreach ( $webArray as $webKey => $webValue ) {
 		$tempSite = $websiteRows->fetch_assoc();
-		$linkArray[$webKey] = $tempSite;
+		push_array($tempSite);
 	}
-	foreach ( $linkArray as $linkValue ) {
+	for($i=0; $i<$sitesFound; $i++) {
 		$title = $linkValue['name'];
 		if ($title == "") $title = $linkValue['url'];
 		$desc = $linkValue['description'];
@@ -163,7 +163,6 @@ else {
 
 		//only go for 10 pages
 		if ($i-$offset == 9) break;
-		$i++;
 	}
 
 	//write pages at bottom
