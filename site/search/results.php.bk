@@ -49,6 +49,18 @@ function createConstruct($wordArray, $column, $useKey = false) {
 	return $construct;
 }
 
+function orderArray($wordArray){
+	$construct = "";
+	
+	foreach( $wordArray as $wordKey => $wordValue ) {
+		$construct .= $wordKey . ",";
+	}
+	
+	$construct = trim($construct, ",");
+	
+	return $construct;
+}
+
 //remove all string searches and put them into an array
 $stringSearch = array();
 preg_match_all("/([\"'])(?:(?=(\\\?))\\2.)*\\1/", $query, $stringSearch);
@@ -83,7 +95,7 @@ else {
 	//gather all webIds of websites based on keywords found
 	//sort in descending order based on cumulative word weights
 	$webArray = array();
-	$webIDQuery = "SELECT webId FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
+	$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
 	$webIDResults = $mysqli->query($webIDQuery);
 	while ($siteKeywordsRow = $webIDResults->fetch_row()) {
 		$webID = $siteKeywordsRow[0];
@@ -97,7 +109,8 @@ else {
 	arsort($webArray);
 
 	//get all location data based on webIds found
-	$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
+	//$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
+	$websiteRowQuery = "SELECT * FROM locations WHERE webID IN (" . orderArray($webArray) . ") ORDER BY FIELD (webID," . orderArray($webArray) . ")";
 	$websiteRows = $mysqli->query($websiteRowQuery);
 
 	//display number of results found in how much time
