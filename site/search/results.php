@@ -61,10 +61,36 @@ function orderArray($wordArray){
 	return $construct;
 }
 
+function getWebIdFromString($stringArray) {
+	$webIdArray = array();
+	$index = 0;
+	foreach ($stringArray as $search) {
+		$words = explode(" ",trim($search));
+		$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
+		$keyIdRows = $mysqli->query($keywordQuery);
+		$keyResult = $keyIdRows->fetch_row();
+		$webIdQuery = "SELECT * FROM siteKeywords WHERE keyId LIKE " . $keyResult[0];
+		$webIdRows = $mysqli->query($keywordQuery);
+
+		$thisWordArray = array();
+		while ($webId = $webIdRows->fetch_row()) {
+			array_push($thisWordArray, $webId[0]);
+		}
+		$webIdArray[$index] = $thisWordArray;
+		$index++;
+	}
+
+	return $webIdArray;
+}
+
 //remove all string searches and put them into an array
 $stringSearch = array();
 preg_match_all("/([\"'])(?:(?=(\\\?))\\2.)*\\1/", $query, $stringSearch);
 $query = preg_replace("/([\"'])(?:(?=(\\\?))\\2.)*?\\1/", "", $query);
+
+//get array of webIds that could contain the string
+$stringIds = getWebIdFromString($stringSearch);
+print_r($stringIds);
 
 //create array based on user-inputted words
 //get all keyword rows from database based on user-inputted words
@@ -72,7 +98,10 @@ $query = preg_replace("/([\"'])(?:(?=(\\\?))\\2.)*?\\1/", "", $query);
 $querySplit = preg_split('/\s+/', trim($query));
 $keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "word");
 $keywordRows = $mysqli->query($keywordQuery);
-$keysFound = $keywordRows->num_rows;
+
+//get total rows from individual keywords & string searches
+$totalRows = $keywordRows->num_rows;	//TODO add string searches
+$keysFound = $totalRows;
 
 if ($querySplit[0] == "") { //if no query tell user 
 	$endTime = microtime(true);
