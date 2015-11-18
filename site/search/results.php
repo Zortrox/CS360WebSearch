@@ -65,12 +65,13 @@ function orderArray($wordArray){
 $stringSearch = array();
 preg_match_all("/([\"'])(?:(?=(\\\?))\\2.)*\\1/", $query, $stringSearch);
 $query = preg_replace("/([\"'])(?:(?=(\\\?))\\2.)*?\\1/", "", $query);
+print_r($stringSearch);
 
 //get array of webIds that could contain the string
 $stringIds = array();
 $stringIndex = 0;
 foreach ($stringSearch as $search) {
-	$words = preg_split('/\s+/', $search);
+	$words = preg_split('/\s+/', trim($search));
 	print_r($words);
 	$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
 	$keyIdRows = $mysqli->query($keyIdQuery);
