@@ -70,6 +70,7 @@ $query = preg_replace("/([\"'])(?:(?=(\\\?))\\2.)*?\\1/", "", $query);
 $stringIds = array();
 $stringIndex = 0;
 foreach ($stringSearch as $search) {
+	print_r($search);
 	$words = explode(" ",trim($search));
 	$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
 	$keyIdRows = $mysqli->query($keyIdQuery);
@@ -85,7 +86,7 @@ foreach ($stringSearch as $search) {
 		}
 		$stringIds[$stringIndex] = $thisWordArray;
 	}
-	
+
 	$stringIndex++;
 }
 print_r($stringIds);
