@@ -62,6 +62,7 @@ function orderArray($wordArray){
 }
 
 function getWebIdFromString($stringArray) {
+	global mysqli;
 	$webIdArray = array();
 	$index = 0;
 	foreach ($stringArray as $search) {
