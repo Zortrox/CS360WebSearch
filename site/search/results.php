@@ -63,8 +63,8 @@ function orderArray($wordArray){
 
 //remove all string searches and put them into an array
 $stringSearch = array();
-preg_match_all("\"[^\"]*\"", $query, $stringSearch);
-$query = preg_replace("\"[^\"]*\"", "", $query);
+preg_match_all("/\"([^\"]*)\"/", $query, $stringSearch);
+$query = preg_replace("/\"([^\"]*)\"/", "", $query);
 print_r($stringSearch);
 
 //get array of webIds that could contain the string
