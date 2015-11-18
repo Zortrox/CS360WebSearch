@@ -73,10 +73,12 @@ foreach ($stringArray as $search) {
 	$words = explode(" ",trim($search));
 	$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
 	$keyIdRows = $mysqli->query($keyIdQuery);
+	echo "key";
 	echo $keyIdRows->num_rows;
 	$keyResult = $keyIdRows->fetch_row();
 	$webIdQuery = "SELECT * FROM siteKeywords WHERE keyId LIKE " . $keyResult[0];
 	$webIdRows = $mysqli->query($webIdQuery);
+	echo "web"
 	echo $webIdRows->num_rows;
 
 	$thisWordArray = array();
