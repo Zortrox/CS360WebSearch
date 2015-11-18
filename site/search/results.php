@@ -69,7 +69,7 @@ $query = preg_replace("/\"([^\"]*)\"/", "", $query);
 //get array of webIds that could contain the string
 $stringIds = array();
 $stringIndex = 0;
-foreach ($stringSearch[0] as $search) {
+foreach ($stringSearch[1] as $search) {
 	$words = preg_split('/\s+/', trim($search));
 	print_r($words);
 	$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
