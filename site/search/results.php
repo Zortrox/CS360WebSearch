@@ -61,36 +61,29 @@ function orderArray($wordArray){
 	return $construct;
 }
 
-function getWebIdFromString($stringArray) {
-	global mysqli;
-	$webIdArray = array();
-	$index = 0;
-	foreach ($stringArray as $search) {
-		$words = explode(" ",trim($search));
-		$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
-		$keyIdRows = $mysqli->query($keyIdQuery);
-		$keyResult = $keyIdRows->fetch_row();
-		$webIdQuery = "SELECT * FROM siteKeywords WHERE keyId LIKE " . $keyResult[0];
-		$webIdRows = $mysqli->query($webIdQuery);
-
-		$thisWordArray = array();
-		while ($webId = $webIdRows->fetch_row()) {
-			array_push($thisWordArray, $webId[0]);
-		}
-		$webIdArray[$index] = $thisWordArray;
-		$index++;
-	}
-
-	return $webIdArray;
-}
-
 //remove all string searches and put them into an array
 $stringSearch = array();
 preg_match_all("/([\"'])(?:(?=(\\\?))\\2.)*\\1/", $query, $stringSearch);
 $query = preg_replace("/([\"'])(?:(?=(\\\?))\\2.)*?\\1/", "", $query);
 
 //get array of webIds that could contain the string
-$stringIds = getWebIdFromString($stringSearch);
+$stringIds = array();
+$stringIndex = 0;
+foreach ($stringArray as $search) {
+	$words = explode(" ",trim($search));
+	$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
+	$keyIdRows = $mysqli->query($keyIdQuery);
+	$keyResult = $keyIdRows->fetch_row();
+	$webIdQuery = "SELECT * FROM siteKeywords WHERE keyId LIKE " . $keyResult[0];
+	$webIdRows = $mysqli->query($webIdQuery);
+
+	$thisWordArray = array();
+	while ($webId = $webIdRows->fetch_row()) {
+		array_push($thisWordArray, $webId[0]);
+	}
+	$stringIds[$stringIndex] = $thisWordArray;
+	$stringIndex++;
+}
 print_r($stringIds);
 
 //create array based on user-inputted words
