@@ -71,8 +71,8 @@ $stringIds = array();
 $stringIndex = 0;
 foreach ($stringSearch[1] as $search) {
 	$words = preg_split('/\s+/', trim($search));
-	echo $words[0];
 	$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
+	echo $keyIdQuery;
 	$keyIdRows = $mysqli->query($keyIdQuery);
 
 	if ($keyIdRows->num_rows > 0) {
