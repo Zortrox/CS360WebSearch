@@ -67,10 +67,10 @@ function getWebIdFromString($stringArray) {
 	foreach ($stringArray as $search) {
 		$words = explode(" ",trim($search));
 		$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE " . $words[0];
-		$keyIdRows = $mysqli->query($keywordQuery);
+		$keyIdRows = $mysqli->query($keyIdQuery);
 		$keyResult = $keyIdRows->fetch_row();
 		$webIdQuery = "SELECT * FROM siteKeywords WHERE keyId LIKE " . $keyResult[0];
-		$webIdRows = $mysqli->query($keywordQuery);
+		$webIdRows = $mysqli->query($webIdQuery);
 
 		$thisWordArray = array();
 		while ($webId = $webIdRows->fetch_row()) {
