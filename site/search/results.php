@@ -74,8 +74,6 @@ foreach ($stringSearch[1] as $search) {
 	$keyIdQuery = "SELECT keyId FROM keywords WHERE word LIKE \"" . $words[0] . "\"";
 	$keyIdRows = $mysqli->query($keyIdQuery);
 
-	echo $keyIdRows->num_rows;
-
 	if ($keyIdRows->num_rows > 0) {
 		$keyResult = $keyIdRows->fetch_row();
 		$webIdQuery = "SELECT * FROM siteKeywords WHERE keyId LIKE " . $keyResult[0];
