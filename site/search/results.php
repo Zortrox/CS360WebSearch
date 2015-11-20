@@ -137,9 +137,9 @@ else {
 			$fullTextRows = $mysqli->query($fullTextQuery);
 			while ($fullText = $fullTextRows->fetch_row()) {
 				//if string is found, add to weight
-				if (strpos($fullText[1], $stringSearch[1][$stringNum]) != 0) {
+				if (strpos($fullText[1], $stringSearch[0][$stringNum]) != 0) {
 					$fullSplit = preg_split('/\s+/', trim($fullText[1]));
-					$fullSplitQuery = "SELECT * FROM keywords WHERE " . createConstruct($fullSplit, "word");
+					$fullSplitQuery = "SELECT keyId FROM keywords WHERE " . createConstruct($fullSplit, "word");
 					$fullSplitRows = $mysqli->query($fullSplitQuery);
 
 					if ($fullSplitRows->num_rows != 0) {
@@ -147,7 +147,7 @@ else {
 						while ($fullRow = $fullSplitRows->fetch_row()) {
 							array_push($fullKeyArray, $fullRow[0]);
 						}
-						$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($fullKeyArray, "keyId") . " AND webId LIKE " . $fullText[0];
+						$webIDQuery = "SELECT * FROM siteKeywords WHERE (" . createConstruct($fullKeyArray, "keyId") . ") AND webId LIKE " . $fullText[0];
 						$webIDResults = $mysqli->query($webIDQuery);
 						while ($siteKeywordsRow = $webIDResults->fetch_row()) {
 							$webId = $fullText[0];
