@@ -54,6 +54,9 @@ function orderArray($wordArray){
 }
 
 //get string searches and put them into an array
+//this array contains 2 string arrays:
+//		[0]->"sample" (with escaped quotes)
+//		[1]->sample (without quotes)
 $stringSearch = array();
 preg_match_all("/\"([^\"]*)\"/", $query, $stringSearch);
 
@@ -94,7 +97,7 @@ $keysFound = $keywordRows->num_rows;
 print_r($stringSearch);
 print_r($stringIds);
 
-if ($querySplit[0] == "" && count($stringSearch) == 0) { //if no query tell user
+if ($querySplit[0] == "" && count($stringSearch[1]) == 0) { //if no query tell user
 	$endTime = microtime(true);
 	$totalTime = round($endTime - $startTime, 3);
 	echo "You must input a query. Time taken: $totalTime seconds.";
