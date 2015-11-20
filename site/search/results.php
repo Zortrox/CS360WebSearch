@@ -18,14 +18,6 @@ if (mysqli_connect_errno()) {
 	exit();
 }
 
-//create array of strings in query **IN PROGRESS**
-$moreStrings = false;
-$queryPart = $query;
-while ($moreStrings) {
-	$stringPos1 = strpos($queryPart, "\"");
-	$queryPart = substr($queryPart, 0);
-}
-
 //creates a partial query that finds values in columns
 function createConstruct($wordArray, $column, $useKey = false) {
 	$construct = "";
@@ -61,10 +53,9 @@ function orderArray($wordArray){
 	return $construct;
 }
 
-//remove all string searches and put them into an array
+//get string searches and put them into an array
 $stringSearch = array();
 preg_match_all("/\"([^\"]*)\"/", $query, $stringSearch);
-$query = preg_replace("/\"([^\"]*)\"/", "", $query);
 
 //get array of webIds that could contain the string
 $stringIds = array();
@@ -88,134 +79,171 @@ foreach ($stringSearch[1] as $search) {
 
 	$stringIndex++;
 }
+print_r($stringSearch);
 print_r($stringIds);
 
 //create array based on user-inputted words
 //get all keyword rows from database based on user-inputted words
 //$query variable is the user's search
+$queryBase = preg_replace("/\"([^\"]*)\"/", "", $query);
 $querySplit = preg_split('/\s+/', trim($query));
 $keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "word");
 $keywordRows = $mysqli->query($keywordQuery);
 
-//get total rows from individual keywords & string searches
-$totalRows = $keywordRows->num_rows;	//TODO add string searches
-$keysFound = $totalRows;
+//determine if keys were found in either;
+$keysFound = $keywordRows->num_rows;
 
-if ($querySplit[0] == "") { //if no query tell user 
+if ($querySplit[0] == "" && count($stringSearch) == 0) { //if no query tell user
 	$endTime = microtime(true);
 	$totalTime = round($endTime - $startTime, 3);
-	echo "You must input a query. Time taken: $totalTime seconds."; 
+	echo "You must input a query. Time taken: $totalTime seconds.";
 }
-	
-else if ($keysFound == 0) { //if query returns no results, inform user 
+else if ($keysFound == 0 && count($stringIds) == 0) { //if query returns no results, inform user 
 	$endTime = microtime(true);
 	$totalTime = round($endTime - $startTime, 3);
 	echo "Sorry, there are no matching result for <b> $query </b>. Time taken: $totalTime seconds.";
 }
 else {
-	//get all keyIds of the user-inputted keywords
-	$keyArray = array();
-	while ($resultsRow = $keywordRows->fetch_row()) {
-		array_push($keyArray, $resultsRow[0]);
-	}
-
-	//gather all webIds of websites based on keywords found
-	//sort in descending order based on cumulative word weights
+	//sorted array based on keyword/string weights
 	$webArray = array();
-	$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
-	$webIDResults = $mysqli->query($webIDQuery);
-	while ($siteKeywordsRow = $webIDResults->fetch_row()) {
-		$webID = $siteKeywordsRow[0];
-		$wordWeight = $siteKeywordsRow[2];
-		if (in_array($webArray, $webID)) {
-			$webArray[$webID] += $wordWeight;
-		} else {
-			$webArray[$webID] = $wordWeight;
+
+	//if there were words found
+	if ($keysFound != 0 ) {
+		//get all keyIds of the user-inputted keywords
+		$keyArray = array();
+		while ($resultsRow = $keywordRows->fetch_row()) {
+			array_push($keyArray, $resultsRow[0]);
+		}
+
+		//gather all webIds of websites based on keywords found
+		//sort in descending order based on cumulative word weights
+		$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
+		$webIDResults = $mysqli->query($webIDQuery);
+		while ($siteKeywordsRow = $webIDResults->fetch_row()) {
+			$webID = $siteKeywordsRow[0];
+			$wordWeight = $siteKeywordsRow[2];
+			if (in_array($webArray, $webID)) {
+				$webArray[$webID] += $wordWeight;
+			} else {
+				$webArray[$webID] = $wordWeight;
+			}
 		}
 	}
-	arsort($webArray);
+	if (count($stringIds) != 0) {
+		//default string word weight
+		$stringWordWeight = 100;
 
-	//get all location data based on webIds found
-	//$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
-	$websiteRowQuery = "SELECT * FROM locations WHERE webID IN (" . orderArray($webArray) . ") ORDER BY FIELD (webID," . orderArray($webArray) . ")";
-	$websiteRows = $mysqli->query($websiteRowQuery);
+		foreach ($stringIds as $stringNum => $webIdArray) {
+			//search fullText of site for string[stringNum]
+			$fullTextQuery = "SELECT webId, siteFullText FROM locations WHERE " . createConstruct($webIdArray, "webId");
+			$fullTextRows = $mysqli->query($fullTextQuery);
+			while ($fullText = $fullTextRows->fetch_row()) {
+				//if string is found, add to weight
+				if (strpos($fullText[1], $stringSearch[1][$stringNum]) != 0) {
+					$wordWeight = str_word_count($stringSearch[1][$stringNum]) * $stringWordWeight;
+					if (in_array($webArray, $fullText[0])) {
+						$webArray[$fullText[0]] += $wordWeight;
+					} else {
+						$webArray[$fullText[0]] = $wordWeight;
+					}
+				}
+			}
+		}
+	}
 
-	//display number of results found in how much time
+	//determine if any sites were found/how many
 	$sitesFound = count($webArray);
-	$plural = $sitesFound > 1 ? "s" : "";
-	echo "<p>$sitesFound result$plural found in ";
-	$endTime = microtime(true);
-	$totalTime = round($endTime - $startTime, 3);
-	echo "$totalTime seconds</p>";
 
-	//Set up how many records in one page
-	$pagesize = 10;
+	if ($sitesFound > 0) {
+		//sort websites based on weight
+		arsort($webArray);
 
-	//calculate how many pages to display those records
-	$pages = intval($sitesFound/$pagesize);
-	if ($sitesFound%$pagesize) $pages++;
+		//get all location data based on webIds found
+		//$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
+		$websiteRowQuery = "SELECT * FROM locations WHERE webID IN (" . orderArray($webArray) . ") ORDER BY FIELD (webID," . orderArray($webArray) . ")";
+		$websiteRows = $mysqli->query($websiteRowQuery);
 
-	//get current page
-	if (isset($_GET['p'])){
-		$page=intval($_GET['p']);
-	}
-	else{
-		//set as the first page 
-		$page = 1;
-	}
-	//adds bounds to pages
-	if ($page < 1) $page = 1;
-	else if ($page > $pages) $page = $pages;
+		//display number of results found in how much time
+		$plural = $sitesFound > 1 ? "s" : "";
+		echo "<p>$sitesFound result$plural found in ";
+		$endTime = microtime(true);
+		$totalTime = round($endTime - $startTime, 3);
+		echo "$totalTime seconds</p>";
 
-	//calculate the offset of the records
-	$offset = $pagesize*($page - 1);
+		//Set up how many records in one page
+		$pagesize = 10;
 
-	//get all rows to ready for page-by-page nav
-	$linkArray = array();
-	while ($tempSite = $websiteRows->fetch_assoc()) {
-		array_push($linkArray, $tempSite);
-	}
-	for ($i=$offset; $i<$sitesFound; $i++) {
-		$title = $linkArray[$i]['name'];
-		if ($title == "") $title = $linkArray[$i]['url'];
-		$desc = $linkArray[$i]['description'];
-		$url = $linkArray[$i]['url'];
+		//calculate how many pages to display those records
+		$pages = intval($sitesFound/$pagesize);
+		if ($sitesFound%$pagesize) $pages++;
 
-		if (substr($url, 0, 4) != "http") {
-			$url = "http://" . $url;
+		//get current page
+		if (isset($_GET['p'])){
+			$page=intval($_GET['p']);
+		}
+		else{
+			//set as the first page 
+			$page = 1;
+		}
+		//adds bounds to pages
+		if ($page < 1) $page = 1;
+		else if ($page > $pages) $page = $pages;
+
+		//calculate the offset of the records
+		$offset = $pagesize*($page - 1);
+
+		//get all rows to ready for page-by-page nav
+		$linkArray = array();
+		while ($tempSite = $websiteRows->fetch_assoc()) {
+			array_push($linkArray, $tempSite);
+		}
+		for ($i=$offset; $i<$sitesFound; $i++) {
+			$title = $linkArray[$i]['name'];
+			if ($title == "") $title = $linkArray[$i]['url'];
+			$desc = $linkArray[$i]['description'];
+			$url = $linkArray[$i]['url'];
+
+			if (substr($url, 0, 4) != "http") {
+				$url = "http://" . $url;
+			}
+
+			echo "<p><a href='$url' class='title' style='font-family:ariel,sans-serif;'> <b> $title </b> </a> <br> $desc <br> <a href='$url' style='text-decoration:none;'> $url </a></p>";
+
+			//only go for 10 pages
+			if ($i-$offset == 9) break;
 		}
 
-		echo "<p><a href='$url' class='title' style='font-family:ariel,sans-serif;'> <b> $title </b> </a> <br> $desc <br> <a href='$url' style='text-decoration:none;'> $url </a></p>";
-
-		//only go for 10 pages
-		if ($i-$offset == 9) break;
-	}
-
-	//write pages at bottom
-	$first = 1;
-	$prev = $page-1;
-	$next = $page+1;
-	$last = $pages;
-	echo "<div id='page-change'>";
-	for ($i=1; $i<=$pages; $i++) {
-		if ($i==$page) {
-			echo "$page ";
-		} else {
-			echo "<a href='?q=$query&p=$i'>$i</a> ";
+		//write pages at bottom
+		$first = 1;
+		$prev = $page-1;
+		$next = $page+1;
+		$last = $pages;
+		echo "<div id='page-change'>";
+		for ($i=1; $i<=$pages; $i++) {
+			if ($i==$page) {
+				echo "$page ";
+			} else {
+				echo "<a href='?q=$query&p=$i'>$i</a> ";
+			}
 		}
+		echo "<br>";
+		if ($page > 1)
+		{
+			echo "<a href='?q=$query&p=$first'>First</a> ";
+			echo "<a href='?q=$query&p=$prev'>Prev</a> ";
+		}
+		if ($page < $pages)
+		{
+			echo "<a href='?q=$query&p=$next'>Next</a> ";
+			echo "<a href='?q=$query&p=$last'>End</a> ";
+		}
+		echo "</div>";
+	} else {
+		//if no sites found (occurs if no full text strings found)
+		$endTime = microtime(true);
+		$totalTime = round($endTime - $startTime, 3);
+		echo "Sorry, there are no matching result for <b> $query </b>. Time taken: $totalTime seconds.";
 	}
-	echo "<br>";
-	if ($page > 1)
-	{
-		echo "<a href='?q=$query&p=$first'>First</a> ";
-		echo "<a href='?q=$query&p=$prev'>Prev</a> ";
-	}
-	if ($page < $pages)
-	{
-		echo "<a href='?q=$query&p=$next'>Next</a> ";
-		echo "<a href='?q=$query&p=$last'>End</a> ";
-	}
-	echo "</div>";
 }
 
 ?>
