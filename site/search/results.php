@@ -143,7 +143,11 @@ else {
 					$fullSplitRows = $mysqli->query($fullSplitQuery);
 
 					if ($fullSplitRows->num_rows != 0) {
-						$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId") . " AND webId LIKE " . $fullText[0];
+						$fullKeyArray = array();
+						while ($fullRow = $fullSplitRows->fetch_row()) {
+							array_push($fullKeyArray, $fullRow[0]);
+						}
+						$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($fullKeyArray, "keyId") . " AND webId LIKE " . $fullText[0];
 						$webIDResults = $mysqli->query($webIDQuery);
 						while ($siteKeywordsRow = $webIDResults->fetch_row()) {
 							$webId = $fullText[0];
