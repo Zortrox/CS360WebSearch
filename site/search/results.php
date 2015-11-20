@@ -79,8 +79,6 @@ foreach ($stringSearch[1] as $search) {
 
 	$stringIndex++;
 }
-print_r($stringSearch);
-print_r($stringIds);
 
 //create array based on user-inputted words
 //get all keyword rows from database based on user-inputted words
