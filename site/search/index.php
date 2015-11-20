@@ -1,5 +1,6 @@
 <?php
-	$query = htmlspecialchars_decode($_GET["q"]);
+	$query = "";
+	if (isset($_GET["q"])) $query = htmlspecialchars_decode($_GET["q"]);
 ?>
 
 <!DOCTYPE html>
