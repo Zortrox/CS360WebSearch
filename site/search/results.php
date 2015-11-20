@@ -129,7 +129,7 @@ else {
 	}
 	if (count($stringIds) != 0) {
 		//default string word weight
-		$stringWordWeight = 100;
+		$stringWordWeight = 50;
 
 		foreach ($stringIds as $stringNum => $webIdArray) {
 			//search fullText of site for string[stringNum]
@@ -138,11 +138,22 @@ else {
 			while ($fullText = $fullTextRows->fetch_row()) {
 				//if string is found, add to weight
 				if (strpos($fullText[1], $stringSearch[1][$stringNum]) != 0) {
-					$wordWeight = str_word_count($stringSearch[1][$stringNum]) * $stringWordWeight;
-					if (in_array($webArray, $fullText[0])) {
-						$webArray[$fullText[0]] += $wordWeight;
-					} else {
-						$webArray[$fullText[0]] = $wordWeight;
+					$fullSplit = preg_split('/\s+/', trim($fullText[1]));
+					$fullSplitQuery = "SELECT * FROM keywords WHERE " . createConstruct($fullSplit, "word");
+					$fullSplitRows = $mysqli->query($fullSplitQuery);
+
+					if ($fullSplitRows->num_rows != 0) {
+						$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId") . " AND webId LIKE " . $fullText[0];
+						$webIDResults = $mysqli->query($webIDQuery);
+						while ($siteKeywordsRow = $webIDResults->fetch_row()) {
+							$webId = $fullText[0];
+							$wordWeight = $siteKeywordsRow[2];
+							if (in_array($webArray, $fullText[0])) {
+								$webArray[$webId] += $wordWeight * $stringWordWeight;
+							} else {
+								$webArray[$webId] = $wordWeight * $stringWordWeight;
+							}
+						}
 					}
 				}
 			}
