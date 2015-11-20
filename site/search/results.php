@@ -140,7 +140,7 @@ else {
 			$fullTextRows = $mysqli->query($fullTextQuery);
 			while ($fullText = $fullTextRows->fetch_row()) {
 				//if string is found, add to weight
-				if (strpos($fullText[1], $stringSearch[1][$stringNum]) != 0) {
+				if (stripos($fullText[1], $stringSearch[1][$stringNum]) != 0) {
 					$fullSplit = preg_split('/\s+/', trim($stringSearch[1][$stringNum]));
 					$fullSplitQuery = "SELECT keyId FROM keywords WHERE " . createConstruct($fullSplit, "word");
 					$fullSplitRows = $mysqli->query($fullSplitQuery);
