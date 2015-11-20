@@ -91,7 +91,8 @@ $keywordRows = $mysqli->query($keywordQuery);
 //determine if keys were found in either;
 $keysFound = $keywordRows->num_rows;
 
-echo $keysFound . " " . count($stringSearch);
+print_r($stringSearch);
+print_r($stringIds);
 
 if ($querySplit[0] == "" && count($stringSearch) == 0) { //if no query tell user
 	$endTime = microtime(true);
