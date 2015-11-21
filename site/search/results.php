@@ -60,6 +60,10 @@ function orderArray($wordArray){
 	return $construct;
 }
 
+//determine wildcards and properly escape
+$query = str_replace("%", "\%", $query);
+$query = str_replace("*", "%", $query);
+
 //get string searches and put them into an array
 //this array contains 2 string arrays:
 //		[0]->"sample" (with escaped quotes)
