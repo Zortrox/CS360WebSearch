@@ -21,6 +21,7 @@ if (mysqli_connect_errno()) {
 }
 
 function echoDebug($info) {
+	global $doDebug;
 	if ($doDebug) echo $info . "<br>";
 }
 
