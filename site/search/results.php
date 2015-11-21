@@ -21,7 +21,7 @@ if (mysqli_connect_errno()) {
 }
 
 function echoDebug($info) {
-	if ($doDebug) echo $webIdQuery . "<br>";
+	if ($doDebug) echo $info . "<br>";
 }
 
 //creates a partial query that finds values in columns
