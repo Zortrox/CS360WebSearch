@@ -61,15 +61,15 @@ function orderArray($wordArray){
 }
 
 //determine wildcards and properly escape
-$query = str_replace("%", "\%", $query);
-$query = str_replace("*", "%", $query);
+$queryWildcard = str_replace("%", "\%", $query);
+$queryWildcard = str_replace("*", "%", $queryWildcard);
 
 //get string searches and put them into an array
 //this array contains 2 string arrays:
 //		[0]->"sample" (with escaped quotes)
 //		[1]->sample (without quotes)
 $stringSearch = array();
-preg_match_all("/\"([^\"]*)\"/", $query, $stringSearch);
+preg_match_all("/\"([^\"]*)\"/", $queryWildcard, $stringSearch);
 
 //get array of webIds that could contain the string
 $stringIds = array();
@@ -103,8 +103,7 @@ if ($doDebug) {
 
 //create array based on user-inputted words
 //get all keyword rows from database based on user-inputted words
-//$query variable is the user's search
-$queryBase = preg_replace("/\"([^\"]*)\"/", "", $query);
+$queryBase = preg_replace("/\"([^\"]*)\"/", "", $queryWildcard);
 echoDebug($queryBase);
 $querySplit = preg_split('/\s+/', trim($queryBase));
 $keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "word");
@@ -161,9 +160,12 @@ else {
 			echoDebug($fullTextQuery);
 			$fullTextRows = $mysqli->query($fullTextQuery);
 			echoDebug($fullTextRows->num_rows . " results.");
+			//convert back to regular percent sign
+			$stringSearchOrigin = array();
+			preg_match_all("/\"([^\"]*)\"/", $query, $stringSearchOrigin);
 			while ($fullText = $fullTextRows->fetch_row()) {
 				//if string is found, add each word to weight * additional string weight (constant)
-				if (stripos($fullText[1], $stringSearch[1][$stringNum]) != 0) {
+				if (stripos($fullText[1], $stringSearchOrigin[1][$stringNum]) != 0) {
 					$fullSplit = preg_split('/\s+/', trim($stringSearch[1][$stringNum]));
 					$fullSplitQuery = "SELECT keyId FROM keywords WHERE " . createConstruct($fullSplit, "word");
 					echoDebug($fullSplitQuery);
