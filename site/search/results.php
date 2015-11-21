@@ -102,7 +102,7 @@ if ($doDebug) {
 //$query variable is the user's search
 $queryBase = preg_replace("/\"([^\"]*)\"/", "", $query);
 echoDebug($queryBase);
-$querySplit = preg_split('/\s+/', trim($query));
+$querySplit = preg_split('/\s+/', trim($queryBase));
 $keywordQuery = "SELECT * FROM keywords WHERE " . createConstruct($querySplit, "word");
 echoDebug($keywordQuery);
 $keywordRows = $mysqli->query($keywordQuery);
