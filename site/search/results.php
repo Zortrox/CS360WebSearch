@@ -1,6 +1,8 @@
 <?php
 
 error_reporting(E_ERROR | E_PARSE);
+$doDebug = false;
+if (isset($_GET["debug"])) $doDebug = ($_GET["debug"] === "true");
 
 //timing setup
 $startTime = microtime(true);
@@ -83,6 +85,13 @@ foreach ($stringSearch[1] as $search) {
 	$stringIndex++;
 }
 
+if ($doDebug) {
+	print_r($stringSearch);
+	echo "<br>";
+	print_r($stringIds);
+	echo "<br>";
+}
+
 //create array based on user-inputted words
 //get all keyword rows from database based on user-inputted words
 //$query variable is the user's search
@@ -137,12 +146,18 @@ else {
 		foreach ($stringIds as $stringNum => $webIdArray) {
 			//search fullText of site for string[stringNum]
 			$fullTextQuery = "SELECT webId, siteFullText FROM locations WHERE " . createConstruct($webIdArray, "webId");
+
+			if ($doDebug) echo $fullTextQuery . "<br>";
+
 			$fullTextRows = $mysqli->query($fullTextQuery);
 			while ($fullText = $fullTextRows->fetch_row()) {
-				//if string is found, add to weight
+				//if string is found, add each word to weight * additional string weight (constant)
 				if (stripos($fullText[1], $stringSearch[1][$stringNum]) != 0) {
 					$fullSplit = preg_split('/\s+/', trim($stringSearch[1][$stringNum]));
 					$fullSplitQuery = "SELECT keyId FROM keywords WHERE " . createConstruct($fullSplit, "word");
+
+					if ($doDebug) echo $fullSplitQuery . "<br>";
+
 					$fullSplitRows = $mysqli->query($fullSplitQuery);
 
 					if ($fullSplitRows->num_rows != 0) {
@@ -150,8 +165,11 @@ else {
 						while ($fullRow = $fullSplitRows->fetch_row()) {
 							array_push($fullKeyArray, $fullRow[0]);
 						}
-						$webIDQuery = "SELECT * FROM siteKeywords WHERE (" . createConstruct($fullKeyArray, "keyId") . ") AND webId LIKE " . $fullText[0];
-						$webIDResults = $mysqli->query($webIDQuery);
+						$webIdQuery = "SELECT * FROM siteKeywords WHERE (" . createConstruct($fullKeyArray, "keyId") . ") AND webId LIKE " . $fullText[0];
+
+						if ($doDebug) echo $webIdQuery . "<br>";
+
+						$webIDResults = $mysqli->query($webIdQuery);
 						while ($siteKeywordsRow = $webIDResults->fetch_row()) {
 							$webId = $fullText[0];
 							$wordWeight = $siteKeywordsRow[2];
