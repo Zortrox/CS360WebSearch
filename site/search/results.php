@@ -20,6 +20,10 @@ if (mysqli_connect_errno()) {
 	exit();
 }
 
+function echoDebug($info) {
+	if ($doDebug) echo $webIdQuery . "<br>";
+}
+
 //creates a partial query that finds values in columns
 function createConstruct($wordArray, $column, $useKey = false) {
 	$construct = "";
@@ -102,6 +106,7 @@ $keywordRows = $mysqli->query($keywordQuery);
 
 //determine if keys were found in either;
 $keysFound = $keywordRows->num_rows;
+echoDebug($keysFound . " individual keywords found.");
 
 if ($querySplit[0] == "" && count($stringSearch[1]) == 0) { //if no query tell user
 	$endTime = microtime(true);
@@ -127,15 +132,15 @@ else {
 
 		//gather all webIds of websites based on keywords found
 		//sort in descending order based on cumulative word weights
-		$webIDQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
-		$webIDResults = $mysqli->query($webIDQuery);
-		while ($siteKeywordsRow = $webIDResults->fetch_row()) {
-			$webID = $siteKeywordsRow[0];
+		$webIdQuery = "SELECT * FROM siteKeywords WHERE " . createConstruct($keyArray, "keyId");
+		$webIdResults = $mysqli->query($webIdQuery);
+		while ($siteKeywordsRow = $webIdResults->fetch_row()) {
+			$webId = $siteKeywordsRow[0];
 			$wordWeight = $siteKeywordsRow[2];
-			if (in_array($webArray, $webID)) {
-				$webArray[$webID] += $wordWeight;
+			if (in_array($webArray, $webId)) {
+				$webArray[$webId] += $wordWeight;
 			} else {
-				$webArray[$webID] = $wordWeight;
+				$webArray[$webId] = $wordWeight;
 			}
 		}
 	}
@@ -146,31 +151,28 @@ else {
 		foreach ($stringIds as $stringNum => $webIdArray) {
 			//search fullText of site for string[stringNum]
 			$fullTextQuery = "SELECT webId, siteFullText FROM locations WHERE " . createConstruct($webIdArray, "webId");
-
-			if ($doDebug) echo $fullTextQuery . "<br>";
-
+			echoDebug($fullTextQuery);
 			$fullTextRows = $mysqli->query($fullTextQuery);
+			echoDebug($fullTextRows->num_rows . " results.");
 			while ($fullText = $fullTextRows->fetch_row()) {
 				//if string is found, add each word to weight * additional string weight (constant)
 				if (stripos($fullText[1], $stringSearch[1][$stringNum]) != 0) {
 					$fullSplit = preg_split('/\s+/', trim($stringSearch[1][$stringNum]));
 					$fullSplitQuery = "SELECT keyId FROM keywords WHERE " . createConstruct($fullSplit, "word");
-
-					if ($doDebug) echo $fullSplitQuery . "<br>";
-
+					echoDebug($fullSplitQuery);
 					$fullSplitRows = $mysqli->query($fullSplitQuery);
-
+					echoDebug($fullSplitRows->num_rows . " results.");
 					if ($fullSplitRows->num_rows != 0) {
 						$fullKeyArray = array();
 						while ($fullRow = $fullSplitRows->fetch_row()) {
 							array_push($fullKeyArray, $fullRow[0]);
 						}
 						$webIdQuery = "SELECT * FROM siteKeywords WHERE (" . createConstruct($fullKeyArray, "keyId") . ") AND webId LIKE " . $fullText[0];
-
-						if ($doDebug) echo $webIdQuery . "<br>";
-
+						echoDebug($webIdQuery);
 						$webIDResults = $mysqli->query($webIdQuery);
+						echoDebug($webIDResults->num_rows . " results.");
 						while ($siteKeywordsRow = $webIDResults->fetch_row()) {
+							echoDebug("Word weight " . $siteKeywordsRow[2] . " added.");
 							$webId = $fullText[0];
 							$wordWeight = $siteKeywordsRow[2];
 							if (in_array($webArray, $fullText[0])) {
@@ -194,7 +196,7 @@ else {
 
 		//get all location data based on webIds found
 		//$websiteRowQuery = "SELECT * FROM locations WHERE " . createConstruct($webArray, "webId", true);
-		$websiteRowQuery = "SELECT * FROM locations WHERE webID IN (" . orderArray($webArray) . ") ORDER BY FIELD (webID," . orderArray($webArray) . ")";
+		$websiteRowQuery = "SELECT * FROM locations WHERE webId IN (" . orderArray($webArray) . ") ORDER BY FIELD (webId," . orderArray($webArray) . ")";
 		$websiteRows = $mysqli->query($websiteRowQuery);
 
 		//display number of results found in how much time
