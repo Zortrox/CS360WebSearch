@@ -163,33 +163,42 @@ else {
 			//convert back to regular percent sign
 			$stringSearchOrigin = array();
 			preg_match_all("/\"([^\"]*)\"/", $query, $stringSearchOrigin);
+
+			$fullWebIdArray = array();
 			while ($fullText = $fullTextRows->fetch_row()) {
-				//if string is found, add each word to weight * additional string weight (constant)
+				//if string is found, add webIds to new array
 				if (stripos($fullText[1], $stringSearchOrigin[1][$stringNum]) != 0) {
-					$fullSplit = preg_split('/\s+/', trim($stringSearch[1][$stringNum]));
-					$fullSplitQuery = "SELECT keyId FROM keywords WHERE " . createConstruct($fullSplit, "word");
-					echoDebug($fullSplitQuery);
-					$fullSplitRows = $mysqli->query($fullSplitQuery);
-					echoDebug($fullSplitRows->num_rows . " results.");
-					if ($fullSplitRows->num_rows != 0) {
-						$fullKeyArray = array();
-						while ($fullRow = $fullSplitRows->fetch_row()) {
-							array_push($fullKeyArray, $fullRow[0]);
-						}
-						$webIdQuery = "SELECT * FROM siteKeywords WHERE (" . createConstruct($fullKeyArray, "keyId") . ") AND webId LIKE " . $fullText[0];
-						echoDebug($webIdQuery);
-						$webIDResults = $mysqli->query($webIdQuery);
-						echoDebug($webIDResults->num_rows . " results.");
-						while ($siteKeywordsRow = $webIDResults->fetch_row()) {
-							echoDebug("Word weight " . $siteKeywordsRow[2] . " added.");
-							$webId = $fullText[0];
-							$wordWeight = $siteKeywordsRow[2];
-							if (in_array($webArray, $fullText[0])) {
-								$webArray[$webId] += $wordWeight * $stringWordWeight;
-							} else {
-								$webArray[$webId] = $wordWeight * $stringWordWeight;
-							}
-						}
+					array_push($fullWebIdArray, $fullText[0]);
+				}
+			}
+
+			//get keyId for each word in current string search
+			$fullSplit = preg_split('/\s+/', trim($stringSearch[1][$stringNum]));
+			$fullSplitQuery = "SELECT keyId FROM keywords WHERE " . createConstruct($fullSplit, "word");
+			echoDebug($fullSplitQuery);
+			$fullSplitRows = $mysqli->query($fullSplitQuery);
+			echoDebug($fullSplitRows->num_rows . " results.");
+
+			//puts keyId into array of keyIds of words found
+			if ($fullSplitRows->num_rows != 0) {
+				$fullKeyArray = array();
+				while ($fullRow = $fullSplitRows->fetch_row()) {
+					array_push($fullKeyArray, $fullRow[0]);
+				}
+
+				$webIdQuery = "SELECT * FROM siteKeywords WHERE (" . createConstruct($fullKeyArray, "keyId") . ") AND (" . createConstruct($fullWebIdArray, "webId") . ")";
+				echoDebug($webIdQuery);
+				$webIDResults = $mysqli->query($webIdQuery);
+				echoDebug($webIDResults->num_rows . " results.");
+
+				while ($siteKeywordsRow = $webIDResults->fetch_row()) {
+					echoDebug("Word weight " . $siteKeywordsRow[2] . " added.");
+					$webId = $siteKeywordsRow[0];
+					$wordWeight = $siteKeywordsRow[2];
+					if (in_array($webArray, $webId)) {
+						$webArray[$webId] += $wordWeight * $stringWordWeight;
+					} else {
+						$webArray[$webId] = $wordWeight * $stringWordWeight;
 					}
 				}
 			}
