@@ -276,19 +276,21 @@ else {
 		$prev = $page-1;
 		$next = $page+1;
 		$last = $pages;
+		$displayOffset = 7;
 		echo "<div id='page-change'>";
-		for ($i=1; $i<=$pages; $i++) {
-			if ($i==$page) {
-				echo "$page ";
-			} else {
-				echo "<a href='?q=$query&p=$i'>$i</a> ";
-			}
-		}
-		echo "<br>";
 		if ($page > 1)
 		{
 			echo "<a href='?q=$query&p=$first'>First</a> ";
 			echo "<a href='?q=$query&p=$prev'>Prev</a> ";
+		}
+		for ($i=0; $i<$displayOffset; $i++) {
+			$writingPage = $page - 3 + $i;
+			if ($writingPage > 0 && $writingPage <= $pages) {
+				if ($writingPage == $page)
+					echo "$page ";
+				else
+					echo "<a href='?q=$query&p=$i'>$i</a> ";
+			}
 		}
 		if ($page < $pages)
 		{
