@@ -280,8 +280,8 @@ else {
 		echo "<div id='page-change'>";
 		if ($page > 1)
 		{
-			echo "<a href='?q=$query&p=$first'>First</a> ";
-			echo "<a href='?q=$query&p=$prev'>Prev</a> ";
+			echo "<a href='?q=$query&p=$first'><b>First</b></a> ";
+			echo "<a href='?q=$query&p=$prev'><b>Prev</b></a> ";
 		}
 		for ($i=0; $i<$displayOffset; $i++) {
 			$writingPage = ($page - ($displayOffset - 1) / 2) + $i;
@@ -292,8 +292,8 @@ else {
 		}
 		if ($page < $pages)
 		{
-			echo "<a href='?q=$query&p=$next'>Next</a> ";
-			echo "<a href='?q=$query&p=$last'>End</a> ";
+			echo "<a href='?q=$query&p=$next'><b>Next</b></a> ";
+			echo "<a href='?q=$query&p=$last'><b>End</b></a> ";
 		}
 		echo "</div>";
 	} else {
