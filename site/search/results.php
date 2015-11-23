@@ -189,7 +189,7 @@ else {
 				//get webIds & weights based on keyIds & associated webIds
 				$webIdQuery = "SELECT * FROM siteKeywords WHERE (" . createConstruct($fullKeyArray, "keyId") . ") AND (" . createConstruct($fullWebIdArray, "webId") . ")";
 				echoDebug($webIdQuery);
-				$webIDResults = $mysqli->query($webIdQuery);
+				$webIdResults = $mysqli->query($webIdQuery);
 				echoDebug($webIDResults->num_rows . " results.");
 
 				//if they were found, add each weight * string search modifier
