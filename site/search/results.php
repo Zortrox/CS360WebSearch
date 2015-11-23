@@ -186,19 +186,23 @@ else {
 					array_push($fullKeyArray, $fullRow[0]);
 				}
 
+				//get webIds & weights based on keyIds & associated webIds
 				$webIdQuery = "SELECT * FROM siteKeywords WHERE (" . createConstruct($fullKeyArray, "keyId") . ") AND (" . createConstruct($fullWebIdArray, "webId") . ")";
 				echoDebug($webIdQuery);
 				$webIDResults = $mysqli->query($webIdQuery);
 				echoDebug($webIDResults->num_rows . " results.");
 
-				while ($siteKeywordsRow = $webIDResults->fetch_row()) {
-					echoDebug("Word weight " . $siteKeywordsRow[2] . " added.");
-					$webId = $siteKeywordsRow[0];
-					$wordWeight = $siteKeywordsRow[2];
-					if (in_array($webArray, $webId)) {
-						$webArray[$webId] += $wordWeight * $stringWordWeight;
-					} else {
-						$webArray[$webId] = $wordWeight * $stringWordWeight;
+				//if they were found, add each weight * string search modifier
+				if ($webIdResults->num_rows != 0) {
+					while ($siteKeywordsRow = $webIDResults->fetch_row()) {
+						echoDebug("Word weight " . $siteKeywordsRow[2] . " added.");
+						$webId = $siteKeywordsRow[0];
+						$wordWeight = $siteKeywordsRow[2];
+						if (in_array($webArray, $webId)) {
+							$webArray[$webId] += $wordWeight * $stringWordWeight;
+						} else {
+							$webArray[$webId] = $wordWeight * $stringWordWeight;
+						}
 					}
 				}
 			}
