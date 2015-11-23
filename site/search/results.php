@@ -194,7 +194,7 @@ else {
 
 				//if they were found, add each weight * string search modifier
 				if ($webIdResults->num_rows != 0) {
-					while ($siteKeywordsRow = $webIDResults->fetch_row()) {
+					while ($siteKeywordsRow = $webIdResults->fetch_row()) {
 						echoDebug("Word weight " . $siteKeywordsRow[2] . " added.");
 						$webId = $siteKeywordsRow[0];
 						$wordWeight = $siteKeywordsRow[2];
