@@ -287,7 +287,7 @@ else {
 			$writingPage = ($page - ($displayOffset - 1) / 2) + $i;
 			if ($writingPage > 0 && $writingPage <= $pages) {
 				if ($writingPage == $page) echo "$page ";
-				else echo "<a href='?q=$query&p=$i'>$i</a> ";
+				else echo "<a href='?q=$query&p=$page'>$page</a> ";
 			}
 		}
 		if ($page < $pages)
