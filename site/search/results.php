@@ -276,7 +276,7 @@ else {
 		$prev = $page-1;
 		$next = $page+1;
 		$last = $pages;
-		$displayOffset = 7;
+		$displayOffset = 11;
 		echo "<div id='page-change'>";
 		if ($page > 1)
 		{
@@ -284,12 +284,10 @@ else {
 			echo "<a href='?q=$query&p=$prev'>Prev</a> ";
 		}
 		for ($i=0; $i<$displayOffset; $i++) {
-			$writingPage = $page - 3 + $i;
+			$writingPage = ($page - ($displayOffset - 1) / 2) + $i;
 			if ($writingPage > 0 && $writingPage <= $pages) {
-				if ($writingPage == $page)
-					echo "$page ";
-				else
-					echo "<a href='?q=$query&p=$i'>$i</a> ";
+				if ($writingPage == $page) echo "$page ";
+				else echo "<a href='?q=$query&p=$i'>$i</a> ";
 			}
 		}
 		if ($page < $pages)
