@@ -256,6 +256,7 @@ else {
 			array_push($linkArray, $tempSite);
 		}
 		for ($i=$offset; $i<$sitesFound; $i++) {
+			$linkWeight = $webArray[$linkArray[$i]['webId']];
 			$title = $linkArray[$i]['name'];
 			if ($title == "") $title = $linkArray[$i]['url'];
 			$desc = $linkArray[$i]['description'];
@@ -265,7 +266,7 @@ else {
 				$url = "http://" . $url;
 			}
 
-			echo "<p><a href='$url' class='title' style='font-family:ariel,sans-serif;'> <b> $title </b> </a> <br> $desc <br> <a href='$url' style='text-decoration:none;'> $url </a></p>";
+			echo "<p><a href='$url' class='title' style='font-family:ariel,sans-serif;'> <b> $title - $linkWeight </b> </a> <br> $desc <br> <a href='$url' style='text-decoration:none;'> $url </a></p>";
 
 			//only go for 10 pages
 			if ($i-$offset == 9) break;
