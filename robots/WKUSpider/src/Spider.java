@@ -91,6 +91,10 @@ public class Spider extends Thread{
 		controller.numOfPages++;
 		
 		if(!links.isEmpty())
-			run(links.remove());
+			try{
+				run(links.remove());
+			} catch (NoSuchElementException n){
+				System.out.println("Page " + page.url + " is useless");
+			}
 	}
 }

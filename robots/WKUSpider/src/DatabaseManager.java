@@ -253,8 +253,9 @@ public class DatabaseManager {
 
 			while (rs.next()) {
 				String url = rs.getString(1);
-				if(rs.getBoolean(2))
-					list.add(url.substring(0,url.indexOf(":")));		
+				url = url.substring(0,url.indexOf(":"));
+				if(rs.getBoolean(2) && !list.contains(url))
+					list.add(url);		
 			}
 			
 	        pst.close();
