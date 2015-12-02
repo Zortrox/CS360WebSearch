@@ -24,7 +24,6 @@ public class PageParser {
 	boolean isEmpty;
 
 	//161.6.0.0 - 161.6.255.255
-	
 	/*
 	 * Notes:
 	 * We can actually parse all the info in one go, 
@@ -50,12 +49,10 @@ public class PageParser {
 			return;
 		}
 		
-		if(src==null)
+		if(src==null){
 			isEmpty = true;
-		
-//		System.out.println(clearTags(src.substring(src.indexOf("<body>"),src.length()-7)).replaceAll("\\s+", " "));
-//		if(1==1)
-//			return;
+			return;
+		}
 		
 		links = new ArrayList<String>();
 		dataNodes = new ArrayList<Data>();
@@ -63,6 +60,8 @@ public class PageParser {
 		
 		// for parsing
 		gatherLinks(src);
+		
+		src = removeScriptTags(src);
 		
 		// instead of paragraphs and headers, we'll just grab everything in the body...
 		String text = "";
@@ -72,12 +71,14 @@ public class PageParser {
 		else
 			text = clearTags(src.substring(bodyStart,src.length()-7));
 		
+		// get the paragrapha and preview texts
 		preview = getDescription(src);
 		paraText = gatherParaText(src);
 		if(preview.equals(""))
 			preview = paraText.substring(0,paraText.length() >= 295 ? 295 : paraText.length())+"...";
 
-		// remove punctuation for now
+		// remove punctuation and symbols
+		
 		text = text.replaceAll("\\s+"," ");
 		text = text.replaceAll("\\&nbsp", "");
 		this.text = text;
@@ -107,22 +108,23 @@ public class PageParser {
 		String[] keywords = getKeywords(src);
 		if(keywords != null)
 			for(int i = 0 ; i < keywords.length ; i++)
-				addData(keywords[i], 130);
+				addData(keywords[i], 150);
 		
+		// the title worsd carry more weight than anything else
 		String[] titleWords = title.split(" ");
 		for(int i = 0 ; i < titleWords.length ; i++)
-			addData(titleWords[i], 100);
+			addData(titleWords[i], 380);
 		
+		// the paragraph text is the meat of the document
 		String[] pwords = paraText.split(" ");
 		for(int w = 0 ; w < pwords.length ; w++)
-			addData(pwords[w], (int)((0.0 + pwords.length - w) / pwords.length * 100.0)+10);
+			addData(pwords[w], (int)((0.0 + pwords.length - w) / pwords.length * 110.0)+10);
 		
+		// the remaining text... just for comprehensiveness
 		String[] words = text.split(" ");
 		for(int w = 0 ; w < words.length ; w++)
-			addData(words[w], (int)((0.0 + words.length - w) / words.length * 80.0));
+			addData(words[w], (int)((0.0 + words.length - w) / words.length * 30.0));
 	}	
-	
-	// DON'T FORGET THE HEADINGS!!!!
 	
 	/**
 	 * This function should be used when the object is created in order to gather all the links 
@@ -276,8 +278,49 @@ public class PageParser {
 		
 	}
 	
-	
-	
+	/**
+	 * Returns a string with the script and style tags and their contents removed.
+	 * @param src
+	 * @return
+	 */
+	private String removeScriptTags(String src){
+		
+		int start = src.indexOf("<script");
+		
+		while(start!=-1){
+			int end = src.indexOf("</script>") + 10;
+			
+			String text = "";
+			
+			text += src.substring(0,start);
+			text += src.substring(end, src.length());
+			
+			src = text;
+			
+			start = src.indexOf("<script>");
+			
+		}
+		
+		start = src.indexOf("<style");
+		
+		System.out.println(start);
+		
+		while(start!=-1){
+			int end = src.indexOf("</style>") + 8;
+			
+			String text = "";
+			
+			text += src.substring(0,start);
+			text += src.substring(end, src.length());
+			
+			src = text;
+			
+			start = src.indexOf("<style>");
+			
+		}
+		
+		return src;
+	}
 	
 	/**
 	 * Removes the html tags and their content "<" to ">" from the string
@@ -361,7 +404,7 @@ public class PageParser {
 	        return str.toString();
 	        
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Problem getting page source");
 		}
 
         return null;

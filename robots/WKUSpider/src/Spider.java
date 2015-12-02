@@ -1,7 +1,6 @@
 import java.util.Queue;
 
 public class Spider extends Thread{
-
 	int id;
 	int numOfSearches = 0;
 	SpiderThread controller;
@@ -32,8 +31,9 @@ public class Spider extends Thread{
 			System.out.println("Thread " + (id == -1 ? "Initial" : id) + " is starting");
 			run(links.remove());
 			try {
+//				System.out.println("Spider " + id + " is waiting on more links for some reason...");
 				if(id != -1){
-					Thread.sleep(4000);
+					Thread.sleep(1000);
 					if(!links.isEmpty()) run(links.remove());
 				}
 			} catch (InterruptedException e) {
@@ -50,14 +50,19 @@ public class Spider extends Thread{
 	 * @param url
 	 */
 	private void run(String url){
-//		System.out.println("Spider " + id + " is crawling... " + url);
-		
-		controller.numOfPages++;
+		System.out.println("Spider " + id + " is crawling " + url);
 		
 		if(numOfSearches == 0)
 			return;
 		
 		PageParser page = new PageParser(url);
+		
+		DatabaseManager.visit(page.url);
+		
+		page.url = page.url.replaceAll("https", "http");
+		
+		if(DatabaseManager.visited(page.url))
+			run(links.remove());
 		
 		if (!page.isEmpty) {
 
@@ -65,12 +70,10 @@ public class Spider extends Thread{
 
 			if (pageID != -1)
 				DatabaseManager.addData(page.getData(), pageID);
-			
-			DatabaseManager.visit(page.url);
 
 			// fix this-------------------------------------------------------------------------------------------
 			for (String u : page.getLinks())
-				if (!DatabaseManager.visited(u))
+				if (!DatabaseManager.visited(u) && !links.contains(u))
 					links.add(u);
 		}
 		
@@ -78,5 +81,10 @@ public class Spider extends Thread{
 			return;
 
 		numOfSearches--;
+		
+		controller.numOfPages++;
+		
+		if(!links.isEmpty())
+			run(links.remove());
 	}
 }

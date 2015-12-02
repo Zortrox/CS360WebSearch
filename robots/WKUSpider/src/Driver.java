@@ -1,26 +1,13 @@
 import java.util.concurrent.TimeUnit;
 
 
-public class Testing {
+public class Driver {
 
 	public static void main(String[] args) {
-		
-//		PageParser page = new PageParser("https://www.wku.edu/cs/");
-//		
-//		for(Data d : page.getData()){
-//			d.print();
-//		}
-//		
-//		for(String d : page.getLinks())
-//			System.out.println(d);
-//		
-//		if(1==1)
-//			return;
-		
 		boolean start = false, portscan = false;
 		String displayData = "";
 		int numOfThreads = 10;
-		int amt = 0;
+		int amt = -1;
 		String startingPoint = "https://www.wku.edu/";
 		
 		if(args.length == 0){

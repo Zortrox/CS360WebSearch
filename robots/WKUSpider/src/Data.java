@@ -1,6 +1,6 @@
 
 public class Data {
-
+//ر للطلبة بيئة دراس
 	String word;
 	int weight;
 	

@@ -6,8 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+
 public class DatabaseManager {
-	
+	//ر للطلبة بيئة دراس
 	static Connection connection;
 	private static final String url = "jdbc:mysql://127.0.0.1:3306/webSearchEngine";
 	private static final String user = "crawl";
@@ -90,7 +92,13 @@ public class DatabaseManager {
 	        while(rs.next())
 	        	index = rs.getInt(1);
 	        
+	        if(fulltext.length() > 15000000){
+	        	fulltext = fulltext.substring(0,15000);
+	        	System.out.println(url + " has too long full text");
+	        }
+	        
 			if (index != -1) {
+				pst.close();
 				pst = connection.prepareStatement("UPDATE locations SET siteFullText = ?, description = ? WHERE webId = ?");
 				pst.setString(1, fulltext);
 				pst.setString(2, description);
@@ -116,13 +124,15 @@ public class DatabaseManager {
 				ResultSet rs2 = pst2.getGeneratedKeys();
 				rs2.next();
 				
+				int result = rs2.getInt(1);
+				
 				pst2.close();
 				rs2.close();
 
 		        pst.close();
 		        rs.close();
 
-				return rs2.getInt(1);
+				return result;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -193,7 +203,8 @@ public class DatabaseManager {
 				PreparedStatement pst = connection.prepareStatement("SELECT * FROM siteKeywords WHERE webID = " + pageID + " AND keyId = " + keyID);
 		        ResultSet rs = pst.executeQuery();
 		        
-		        while (rs.next()) 
+		        // update the weight if the keyid and pageid are found
+		        while (rs.next())
 		        {
 					pst = connection
 							.prepareStatement("UPDATE siteKeywords SET weight = ? WHERE webId = ? AND keyId = ?");
@@ -201,19 +212,27 @@ public class DatabaseManager {
 					pst.setInt(2, pageID);
 					pst.setInt(3, keyID);
 					pst.execute();
+					
+					rs.close();
+					pst.close();
+					
 					continue loop;
 				}
-				
-		        PreparedStatement pst2 = connection.prepareStatement("INSERT INTO siteKeywords (webId, keyId, weight)"
-						+ " values (?, ?, ?)");
-				pst2.setInt(1,pageID);
-				pst2.setInt(2,keyID);
-				pst2.setInt(3, d.weight);
-				pst2.execute();
+				try{
+					PreparedStatement pst2 = connection
+							.prepareStatement("INSERT INTO siteKeywords (webId, keyId, weight)"
+									+ " values (?, ?, ?)");
+					pst2.setInt(1, pageID);
+					pst2.setInt(2, keyID);
+					pst2.setInt(3, d.weight);
+					pst2.execute();
+					pst2.close();
+				} catch (MySQLIntegrityConstraintViolationException e){
+					System.out.println("Somehow, there is a duplicate");
+				}
 				
 		        pst.close();
 		        rs.close();
-		        pst2.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
