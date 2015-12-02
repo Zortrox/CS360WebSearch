@@ -31,7 +31,6 @@ public class SpiderThread implements Runnable{
 		
 		// queue up all the links in the webserver list
 		links.addAll(DatabaseManager.getWebServerList());
-
 		
 		// create all the threads and let them run
 		Thread[] threads = new Thread[maxThreads];

@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
 public class Spider extends Thread{
@@ -62,7 +63,12 @@ public class Spider extends Thread{
 		page.url = page.url.replaceAll("https", "http");
 		
 		if(DatabaseManager.visited(page.url))
-			run(links.remove());
+			if(!links.isEmpty())
+				try{
+					run(links.remove());
+				} catch (NoSuchElementException n){
+					System.out.println("Page " + page.url + " is useless");
+				}
 		
 		if (!page.isEmpty) {
 
