@@ -8,6 +8,8 @@
 <head>
 	<meta charset="utf-8">
 	<title>WKU Search - Results</title>
+	<link rel="icon" type="image/ico" href="../favicon.ico">
+	<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" type="text/css" href="../style.css">
 </head>
 <body>
